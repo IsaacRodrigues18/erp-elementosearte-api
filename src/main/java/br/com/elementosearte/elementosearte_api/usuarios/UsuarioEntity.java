@@ -1,6 +1,8 @@
 package br.com.elementosearte.elementosearte_api.usuarios;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,12 +23,16 @@ public class UsuarioEntity {
     @Column(name = "id_usuario")
     private Integer id;
 
+    @NotBlank
     @Column(name = "nome", nullable = false, length = 100)
     private String nome;
 
+    @NotBlank
+    @Email
     @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
 
+    @NotBlank
     @Column(name = "senha", nullable = false, length = 255)
     private String senha;
 
