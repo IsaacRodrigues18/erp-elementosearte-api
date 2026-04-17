@@ -1,10 +1,10 @@
-create table tb_usuarios
+CREATE TABLE tb_usuarios
 (
-    id_usuario    SERIAL PRIMARY KEY,
-    nome          varchar(100) not null,
-    email         varchar(255) not null unique,
-    senha         varchar(255) not null,
-    ativo         boolean               default true,
-    criado_em     timestamp    not null default current_timestamp,
-    atualizado_em timestamp
+    id_usuario    BIGSERIAL PRIMARY KEY,
+    nome          VARCHAR(100) NOT NULL,
+    email         VARCHAR(255) NOT NULL UNIQUE,
+    senha         VARCHAR(255) NOT NULL,
+    ativo         BOOLEAN NOT NULL DEFAULT TRUE,
+    criado_em     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
