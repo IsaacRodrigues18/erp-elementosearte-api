@@ -1,13 +1,13 @@
 package br.com.elementosearte.elementosearte_api.usuarios.dto;
 
-public class UsarioRequestDto {
+public class UsuarioRequestDTO {
 
 
     private String nome;
     private String email;
     private String senha;
 
-    public UsarioRequestDto() {
+    public UsuarioRequestDTO() {
     }
 
 
