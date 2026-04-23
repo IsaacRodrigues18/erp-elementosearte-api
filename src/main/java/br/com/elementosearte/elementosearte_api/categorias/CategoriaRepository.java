@@ -4,8 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoriaRepository extends JpaRepository<CategoriaEntity, Long> {
 
-    static boolean existsByNome(String nome);
-
-
-
+    boolean existsByNome(String nome);
 }
