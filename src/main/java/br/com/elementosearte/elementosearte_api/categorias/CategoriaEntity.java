@@ -24,11 +24,13 @@ public class CategoriaEntity {
     private Long idCategoria;
 
     @NotBlank
+    @Column(name = "nome", nullable = false, unique = true, length = 100)
     private String nome;
 
+    @Column(name = "descricao", length = 255)
     private String descricao;
 
-
+    @Column(name = "ativo", nullable = false)
     private boolean ativo = true;
 
     @Column(name = "criado_em", nullable = false)
@@ -36,4 +38,18 @@ public class CategoriaEntity {
 
     @Column(name = "atualizado_em", nullable = false)
     private LocalDateTime atualizadoEm;
+
+
+    @PrePersist void prePersist(){
+        this.criadoEm = LocalDateTime.now();
+        this.atualizadoEm = LocalDateTime.now();
+    }
+
+
+    @PreUpdate
+    public void preUpdate() {
+        this.atualizadoEm = LocalDateTime.now();
+    }
+
+
 }
