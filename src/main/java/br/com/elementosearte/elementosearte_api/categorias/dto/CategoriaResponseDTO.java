@@ -1,6 +1,5 @@
 package br.com.elementosearte.elementosearte_api.categorias.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +8,7 @@ import lombok.Setter;
 public class CategoriaResponseDTO {
 
 
-    private Long id_categoria;
+    private Long idCategoria;
 
     private String nome;
 
@@ -22,8 +21,8 @@ public class CategoriaResponseDTO {
 
     }
 
-    public CategoriaResponseDTO(Long id_categoria, String nome, String descricao, boolean ativo) {
-        this.id_categoria = id_categoria;
+    public CategoriaResponseDTO(Long idCategoria, String nome, String descricao, boolean ativo) {
+        this.idCategoria = idCategoria;
         this.nome = nome;
         this.descricao = descricao;
         this.ativo = ativo;
