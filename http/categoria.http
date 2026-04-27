@@ -1,0 +1,26 @@
+### Criar categoria
+POST http://localhost:8080/categorias
+Content-Type: application/json
+
+{
+  "nome": "Eletrônicos",
+  "descricao": "Produtos eletrônicos"
+}
+
+### Listar categorias
+GET http://localhost:8080/categorias
+
+### Buscar por ID
+GET http://localhost:8080/categorias/1
+
+### Atualizar categoria
+PUT http://localhost:8080/categorias/3
+Content-Type: application/json
+
+{
+  "nome": "Eletrônicos Atualizado",
+  "descricao": "Nova descrição"
+}
+
+### Deletar categoria
+DELETE http://localhost:8080/categorias/2
