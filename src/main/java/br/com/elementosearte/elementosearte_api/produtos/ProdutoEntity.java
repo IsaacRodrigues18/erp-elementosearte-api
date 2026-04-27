@@ -1,4 +1,4 @@
-package br.com.elementosearte.elementosearte_api;
+package br.com.elementosearte.elementosearte_api.produtos;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -60,7 +60,6 @@ public class ProdutoEntity {
     public void preUpdate() {
         this.atualizadoEm = LocalDateTime.now();
     }
-
 
 
 
