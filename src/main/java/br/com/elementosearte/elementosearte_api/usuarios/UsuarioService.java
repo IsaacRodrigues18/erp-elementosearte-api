@@ -25,7 +25,7 @@ public class UsuarioService {
         UsuarioEntity usuarioSalvo = usuarioRepository.save(usuarioEntity);
 
         return new UsuarioResponseDTO(
-                usuarioSalvo.getId_usuario(),
+                usuarioSalvo.getIdUsuario(),
                 usuarioSalvo.getNome(),
                 usuarioSalvo.getEmail(),
                 usuarioSalvo.isAtivo()

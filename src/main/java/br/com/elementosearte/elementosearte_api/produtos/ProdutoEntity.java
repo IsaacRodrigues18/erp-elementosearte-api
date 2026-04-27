@@ -77,5 +77,4 @@ public class ProdutoEntity {
     private UsuarioEntity atualizadoPorUsuario;
 
 
-
 }

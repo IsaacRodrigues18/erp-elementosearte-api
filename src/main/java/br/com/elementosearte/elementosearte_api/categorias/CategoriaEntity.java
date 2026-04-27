@@ -1,5 +1,6 @@
 package br.com.elementosearte.elementosearte_api.categorias;
 
+import br.com.elementosearte.elementosearte_api.produtos.ProdutoEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @NoArgsConstructor
@@ -40,7 +42,8 @@ public class CategoriaEntity {
     private LocalDateTime atualizadoEm;
 
 
-    @PrePersist void prePersist(){
+    @PrePersist
+    public void prePersist() {
         this.criadoEm = LocalDateTime.now();
         this.atualizadoEm = LocalDateTime.now();
     }
@@ -50,6 +53,9 @@ public class CategoriaEntity {
     public void preUpdate() {
         this.atualizadoEm = LocalDateTime.now();
     }
+
+    @OneToMany(mappedBy = "categoria")
+    private List<ProdutoEntity> produtos;
 
 
 }
