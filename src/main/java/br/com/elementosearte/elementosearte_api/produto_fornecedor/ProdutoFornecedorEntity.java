@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -33,6 +35,9 @@ public class ProdutoFornecedorEntity {
 
     @Column(name = "fornecedor_principal", nullable = false)
     private boolean fornecedorPrincipal = false;
+
+    @Column(name = "custo_fornecedor", nullable = false, precision = 10, scale = 2)
+    private BigDecimal custoFornecedor;
 
     @Column(name = "ativo", nullable = false)
     private boolean ativo = true;
