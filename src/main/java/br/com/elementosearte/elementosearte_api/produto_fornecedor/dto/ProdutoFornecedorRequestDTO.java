@@ -11,13 +11,13 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProdutoFornecedorResquestDTO {
+public class ProdutoFornecedorRequestDTO {
 
     private  Long idProduto;
 
     private Long idFornecedor;
 
-    private boolean forncedorPrincipal  = false;
+    private boolean fornecedorPrincipal = false;
 
     private BigDecimal custoFornecedor;
 
