@@ -1,6 +1,7 @@
 package br.com.elementosearte.elementosearte_api.produtos;
 
 import br.com.elementosearte.elementosearte_api.categorias.CategoriaEntity;
+import br.com.elementosearte.elementosearte_api.produto_imagem.ProdutoImagemEntity;
 import br.com.elementosearte.elementosearte_api.usuarios.UsuarioEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
@@ -13,6 +14,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -76,5 +78,7 @@ public class ProdutoEntity {
     @JoinColumn(name = "atualizado_por_usuario_id", referencedColumnName = "id_usuario")
     private UsuarioEntity atualizadoPorUsuario;
 
+    @OneToMany(mappedBy = "produtos")
+    List<ProdutoImagemEntity> imagensProdutos;
 
 }

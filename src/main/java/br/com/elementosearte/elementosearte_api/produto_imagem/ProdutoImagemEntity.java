@@ -24,8 +24,8 @@ public class ProdutoImagemEntity {
     private Long idProdutoImagem;
 
     @ManyToOne
-    @JoinColumn(table = "tb_produtos", referencedColumnName = "id_produto", nullable = false)
-    private ProdutoEntity idProduto;
+    @JoinColumn(name = "id_produto", nullable = false)
+    private ProdutoEntity produto;
 
     @NotBlank
     @Column(name = "url_imagem", nullable = false, length = 255)
