@@ -101,9 +101,7 @@ public class ProdutoImagemService {
                 .orElseThrow(() -> new IllegalArgumentException("Imagem não encontrada"));
     }
 
-    public List<ProdutoImagemResponseDTO> ordenarImagemManualmente(
-            Long idProdutoImagem,
-            Integer novaOrdem) {
+    public List<ProdutoImagemResponseDTO> ordenarImagemManualmente(Long idProdutoImagem, Integer novaOrdem) {
 
         if (novaOrdem == null || novaOrdem < 1) {
             throw new IllegalArgumentException("Ordem inválida");
