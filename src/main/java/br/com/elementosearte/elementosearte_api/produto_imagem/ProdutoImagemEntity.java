@@ -43,7 +43,7 @@ public class ProdutoImagemEntity {
     private boolean ativo = true;
 
     @Column(name = "ordem_exibicao", nullable = false)
-    private Integer ordemExibicao;
+        private Integer ordemExibicao;
 
     @Column(name = "criado_em", nullable = false)
     private LocalDateTime criadoEm;
