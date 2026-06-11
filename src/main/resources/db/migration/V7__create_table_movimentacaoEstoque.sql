@@ -1,10 +1,10 @@
-CREATE TABLE movimentacao_estoque
+CREATE TABLE tb_movimentacao_estoque
 (
     id_movimentacao_estoque BIGSERIAL PRIMARY KEY,
 
     id_produto BIGINT NOT NULL,
 
-    id_usuario BIGINT NOT NULL,
+    id_usuario BIGINT NOT NULL
 
     quantidade INTEGER NOT NULL,
 
