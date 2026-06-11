@@ -1,6 +1,7 @@
 package br.com.elementosearte.elementosearte_api.produtos;
 
 import br.com.elementosearte.elementosearte_api.categorias.CategoriaEntity;
+import br.com.elementosearte.elementosearte_api.movimentacao_estoque.MovimentacaoEstoqueEntity;
 import br.com.elementosearte.elementosearte_api.produto_imagem.ProdutoImagemEntity;
 import br.com.elementosearte.elementosearte_api.usuarios.UsuarioEntity;
 import jakarta.persistence.*;
@@ -80,5 +81,7 @@ public class ProdutoEntity {
 
     @OneToMany(mappedBy = "produtos")
     List<ProdutoImagemEntity> imagensProdutos;
+
+
 
 }
