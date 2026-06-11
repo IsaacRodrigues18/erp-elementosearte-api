@@ -4,11 +4,11 @@ CREATE TABLE tb_movimentacao_estoque
 
     id_produto BIGINT NOT NULL,
 
-    id_usuario BIGINT NOT NULL
+    id_usuario BIGINT NOT NULL,
 
     quantidade INTEGER NOT NULL,
 
-    valor_unitario DECIMAL(10,2),
+    valor_unitario DECIMAL(10,2) NOT NULL,
 
     tipo_movimentacao VARCHAR(30) NOT NULL,
 
