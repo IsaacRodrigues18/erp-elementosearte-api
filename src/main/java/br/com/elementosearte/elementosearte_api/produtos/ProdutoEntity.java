@@ -79,7 +79,7 @@ public class ProdutoEntity {
     @JoinColumn(name = "atualizado_por_usuario_id", referencedColumnName = "id_usuario")
     private UsuarioEntity atualizadoPorUsuario;
 
-    @OneToMany(mappedBy = "produtos")
+    @OneToMany(mappedBy = "produto")
     List<ProdutoImagemEntity> imagensProdutos;
 
 

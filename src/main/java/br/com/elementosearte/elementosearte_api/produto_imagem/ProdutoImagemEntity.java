@@ -65,4 +65,7 @@ public class ProdutoImagemEntity {
     @PreUpdate void preUpdate() {
         this.atualizadoEm = LocalDateTime.now();
     }
+
+
+
 }
