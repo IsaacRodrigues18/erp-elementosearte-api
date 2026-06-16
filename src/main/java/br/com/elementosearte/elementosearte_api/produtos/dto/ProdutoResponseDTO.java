@@ -17,7 +17,7 @@ public class ProdutoResponseDTO {
     private String descricao;
 
     private BigDecimal precoVendaReferencia;
-
+    
     private boolean ativo;
 
     public ProdutoResponseDTO(){
