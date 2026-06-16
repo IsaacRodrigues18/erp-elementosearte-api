@@ -2,18 +2,19 @@
 
     import br.com.elementosearte.elementosearte_api.usuarios.dto.UsuarioResponseDTO;
     import br.com.elementosearte.elementosearte_api.usuarios.dto.UsuarioRequestDTO;
-    import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Service;
 
     @Service
     public class UsuarioService {
 
-        @Autowired
-        private UsuarioRepository usuarioRepository;
+            private final UsuarioRepository usuarioRepository;
 
+            public UsuarioService(UsuarioRepository usuarioRepository){
+                this.usuarioRepository = usuarioRepository;
+            }
 
         public UsuarioResponseDTO cadastrarUsuario(UsuarioRequestDTO usuarioDto) {
-            if (usuarioRepository.existsByEmail(usuarioDto.getEmail())) {
+                if (usuarioRepository.existsByEmail(usuarioDto.getEmail())) {
                 throw new IllegalArgumentException("Email já cadastrado");
             }
 
