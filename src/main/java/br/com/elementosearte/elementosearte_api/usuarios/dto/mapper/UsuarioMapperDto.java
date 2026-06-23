@@ -3,11 +3,13 @@ package br.com.elementosearte.elementosearte_api.usuarios.dto.mapper;
 import br.com.elementosearte.elementosearte_api.usuarios.UsuarioEntity;
 import br.com.elementosearte.elementosearte_api.usuarios.dto.UsuarioRequestDTO;
 import br.com.elementosearte.elementosearte_api.usuarios.dto.UsuarioResponseDTO;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UsuarioMapperDto {
 
 
-    public static UsuarioResponseDTO toResponseDto(UsuarioEntity usuarioEntity) {
+    public UsuarioResponseDTO toResponseDto(UsuarioEntity usuarioEntity) {
         return new  UsuarioResponseDTO(
                 usuarioEntity.getIdUsuario(),
                 usuarioEntity.getNome(),
@@ -17,7 +19,7 @@ public class UsuarioMapperDto {
 
     }
 
-    public static UsuarioEntity toEnityDto(UsuarioRequestDTO usuarioRequestDTO){
+    public UsuarioEntity toEntityDto(UsuarioRequestDTO usuarioRequestDTO){
         UsuarioEntity usuario = new UsuarioEntity();
 
         usuario.setNome(usuarioRequestDTO.getNome());
