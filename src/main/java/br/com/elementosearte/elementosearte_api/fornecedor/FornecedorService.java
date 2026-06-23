@@ -1,8 +1,10 @@
 package br.com.elementosearte.elementosearte_api.fornecedor;
 
+import br.com.elementosearte.elementosearte_api.exceptions.BusinessException;
+import br.com.elementosearte.elementosearte_api.exceptions.ResourceNotFoundException;
 import br.com.elementosearte.elementosearte_api.fornecedor.dto.FornecedorRequestDTO;
 import br.com.elementosearte.elementosearte_api.fornecedor.dto.FornecedorResponseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.elementosearte.elementosearte_api.fornecedor.dto.mapper.FornecedorMapperDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,71 +12,76 @@ import java.util.List;
 @Service
 public class FornecedorService {
 
-    @Autowired
-    private FornecedorRepository fornecedorRepository;
+    private final FornecedorRepository fornecedorRepository;
+    private FornecedorMapperDto fornecedorMapperDto;
 
-
-    public FornecedorResponseDTO doDTO(FornecedorEntity fornecedor) {
-        return new FornecedorResponseDTO(
-                fornecedor.getNomeFornecedor(),
-                fornecedor.getCidade(),
-                fornecedor.getTelefone(),
-                fornecedor.getEmail(),
-                fornecedor.isAtivo()
-        );
+    public FornecedorService(FornecedorRepository fornecedorRepository, FornecedorMapperDto fornecedorMapperDto) {
+        this.fornecedorRepository = fornecedorRepository;
+        this.fornecedorMapperDto = fornecedorMapperDto;
     }
+
 
     public FornecedorResponseDTO criarFornecedor(FornecedorRequestDTO dto) {
         if (fornecedorRepository.existsByNomeFornecedor(dto.getNomeFornecedor())) {
-            throw new IllegalArgumentException("Fornecedor já cadastrado");
+            throw new BusinessException("Fornecedor já cadastrado");
         }
-
-        FornecedorEntity fornecedor = new FornecedorEntity();
-
-        fornecedor.setNomeFornecedor(dto.getNomeFornecedor());
-        fornecedor.setCidade(dto.getCidade());
-        fornecedor.setTelefone(dto.getTelefone());
-        fornecedor.setEmail(dto.getEmail());
+        FornecedorEntity fornecedor = fornecedorMapperDto.toEntity(dto);
 
         FornecedorEntity fornecedorSalvo = fornecedorRepository.save(fornecedor);
-        return doDTO(fornecedorSalvo);
+
+        return fornecedorMapperDto.toResponseDto(fornecedorSalvo);
 
     }
 
-    public List<FornecedorResponseDTO> listarFornecedores() {
+    public List<FornecedorResponseDTO> listarFornecedoresAtivos() {
         return fornecedorRepository.findByAtivoTrue().
                 stream().
-                map(this::doDTO).
+                map(fornecedorMapperDto::toResponseDto).
                 toList();
     }
 
     public List<FornecedorResponseDTO> listarFornecedoresPorCidade(String cidade) {
         return fornecedorRepository.findByCidadeAndAtivoTrue(cidade)
                 .stream()
-                .map(this::doDTO)
+                .map(fornecedorMapperDto::toResponseDto)
                 .toList();
     }
 
     public FornecedorResponseDTO buscarFornecedorPorId(Long idFornecedor) {
         FornecedorEntity fornecedor = fornecedorRepository.findById(idFornecedor)
-                .orElseThrow(() -> new IllegalArgumentException("Fornecedor não encontrado"));
-        return doDTO(fornecedor);
+                .orElseThrow(() -> new ResourceNotFoundException("Fornecedor não encontrado"));
+        return fornecedorMapperDto.toResponseDto(fornecedor);
     }
 
     public void inativarFornecedor(Long idFornecedor) {
         FornecedorEntity fornecedor = fornecedorRepository.findById(idFornecedor).
-                orElseThrow(() -> new IllegalArgumentException("Fornecedor não encontrado"));
+                orElseThrow(() -> new ResourceNotFoundException("Fornecedor não encontrado"));
+
+        if (!fornecedor.isAtivo()) {
+            throw new BusinessException("Fornecedor já está inativo");
+        }
 
         fornecedor.setAtivo(false);
         fornecedorRepository.save(fornecedor);
     }
 
-    public void deletarFornecedor(Long idFornecedor){
+    public void ativarFornecedor(Long idFornecedor) {
+        FornecedorEntity fornecedor = fornecedorRepository.findById(idFornecedor)
+                .orElseThrow(() -> new ResourceNotFoundException("Fornecedor não encontrado"));
+
+        if (fornecedor.isAtivo()) {
+            throw new BusinessException("Fornecedor já está ativo");
+        }
+
+        fornecedor.setAtivo(true);
+        fornecedorRepository.save(fornecedor);
+    }
+
+    public void deletarFornecedor(Long idFornecedor) {
         FornecedorEntity fornecedor = fornecedorRepository.findById(idFornecedor).
-                orElseThrow(() -> new IllegalArgumentException("Fornecedor não encontrado"));
+                orElseThrow(() -> new ResourceNotFoundException("Fornecedor não encontrado"));
 
         fornecedorRepository.delete(fornecedor);
     }
-
 
 }
