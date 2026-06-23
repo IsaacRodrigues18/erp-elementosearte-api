@@ -25,6 +25,11 @@ public class FornecedorService {
         if (fornecedorRepository.existsByNomeFornecedor(dto.getNomeFornecedor())) {
             throw new BusinessException("Fornecedor já cadastrado");
         }
+
+        if (dto.getEmail() != null && dto.getEmail().isBlank()) {
+            dto.setEmail(null);
+        }
+
         FornecedorEntity fornecedor = fornecedorMapperDto.toEntity(dto);
 
         FornecedorEntity fornecedorSalvo = fornecedorRepository.save(fornecedor);
