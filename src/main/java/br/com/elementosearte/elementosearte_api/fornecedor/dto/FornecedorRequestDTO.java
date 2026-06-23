@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class FornecedorRequestDTO {
 
-    @NotBlank
+    @NotBlank(message = "Nome do fornecedor é obrigatório")
     private String nomeFornecedor;
     @NotBlank
     private String cidade;

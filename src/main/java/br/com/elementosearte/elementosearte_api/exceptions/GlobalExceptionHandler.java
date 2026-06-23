@@ -3,6 +3,7 @@ package br.com.elementosearte.elementosearte_api.exceptions;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -53,6 +54,26 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiErrorResponse> tratarMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest request) {
+
+        String mensagem = ex.getBindingResult()
+                .getFieldError()
+                .getDefaultMessage();
+
+        ApiErrorResponse erro = new ApiErrorResponse(
+                400,
+                "Bad Request",
+                mensagem,
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(erro);
     }
 
 }

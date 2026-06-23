@@ -58,7 +58,7 @@ public class FornecedorEntity {
     }
 
     @PreUpdate
-    public void preUpdate() {
+    public void preUpdate()  {
         this.atualizadoEm = LocalDateTime.now();
     }
 

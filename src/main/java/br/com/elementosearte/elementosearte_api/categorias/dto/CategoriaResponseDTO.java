@@ -1,10 +1,14 @@
 package br.com.elementosearte.elementosearte_api.categorias.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CategoriaResponseDTO {
 
 
@@ -17,17 +21,6 @@ public class CategoriaResponseDTO {
     private boolean ativo;
 
 
-    public CategoriaResponseDTO() {
-
-    }
-
-    public CategoriaResponseDTO(Long idCategoria, String nome, String descricao, boolean ativo) {
-        this.idCategoria = idCategoria;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.ativo = ativo;
-
-    }
 
 }
 
