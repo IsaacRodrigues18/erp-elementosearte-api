@@ -29,7 +29,7 @@ public class FornecedorController {
 
     @GetMapping
     public ResponseEntity<List<FornecedorResponseDTO>> listarFornecedores() {
-        return ResponseEntity.ok(fornecedorService.listarFornecedores());
+        return ResponseEntity.ok(fornecedorService.listarFornecedoresAtivos());
     }
 
     @GetMapping("/cidade/{cidade}")
@@ -49,6 +49,12 @@ public class FornecedorController {
     @PatchMapping("/{idFornecedor}/inativar")
     public ResponseEntity<Void> inativarFornecedor(@PathVariable Long idFornecedor) {
         fornecedorService.inativarFornecedor(idFornecedor);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{idFornecedor}/ativar")
+    public ResponseEntity<Void> ativarFornecedor(@PathVariable Long idFornecedor) {
+        fornecedorService.ativarFornecedor(idFornecedor);
         return ResponseEntity.noContent().build();
     }
 
