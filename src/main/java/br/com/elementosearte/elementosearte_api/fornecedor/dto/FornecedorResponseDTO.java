@@ -11,6 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class FornecedorResponseDTO {
 
+    private Long idFornecedor;
+
     private String nomeFornecedor;
 
     private String cidade;
@@ -18,6 +20,8 @@ public class FornecedorResponseDTO {
     private String telefone;
 
     private String email;
+
+    private String observacao;
 
     private boolean ativo;
 }
