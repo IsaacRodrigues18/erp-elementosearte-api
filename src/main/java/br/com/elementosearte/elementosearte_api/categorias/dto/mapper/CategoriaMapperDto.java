@@ -16,7 +16,7 @@ public class CategoriaMapperDto {
 
         return categoriaEntity;
     }
-    public CategoriaResponseDTO toDTO(CategoriaEntity categoriaEntity) {
+    public CategoriaResponseDTO toResponseDto(CategoriaEntity categoriaEntity) {
         CategoriaResponseDTO categoriaResponseDTO = new CategoriaResponseDTO();
 
         categoriaResponseDTO.setIdCategoria(categoriaEntity.getIdCategoria());

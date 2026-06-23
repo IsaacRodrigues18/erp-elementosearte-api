@@ -13,7 +13,7 @@ import java.util.List;
 public class FornecedorService {
 
     private final FornecedorRepository fornecedorRepository;
-    private FornecedorMapperDto fornecedorMapperDto;
+    private final FornecedorMapperDto fornecedorMapperDto;
 
     public FornecedorService(FornecedorRepository fornecedorRepository, FornecedorMapperDto fornecedorMapperDto) {
         this.fornecedorRepository = fornecedorRepository;
