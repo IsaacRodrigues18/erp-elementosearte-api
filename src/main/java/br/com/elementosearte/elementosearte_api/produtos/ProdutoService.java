@@ -18,15 +18,6 @@ public class ProdutoService {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
-    private ProdutoResponseDTO toDTO(ProdutoEntity produto) {
-        return new ProdutoResponseDTO(
-                produto.getIdProduto(),
-                produto.getNomeProduto(),
-                produto.getDescricaoProduto(),
-                produto.getPrecoVendaReferencia(),
-                produto.isAtivo()
-        );
-    }
 
     public ProdutoResponseDTO criarProduto(ProdutoRequestDTO produtoRequestDTO) {
         if (produtoRepository.existsByNomeProduto(produtoRequestDTO.getNome())) {

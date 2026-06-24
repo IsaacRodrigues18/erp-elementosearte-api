@@ -4,43 +4,35 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProdutoRequestDTO {
 
-    @NotBlank
+    @NotBlank(message = "Nome do produto obrigatório")
     @Size(max = 255)
     private String nome;
 
     private String descricao;
 
-    @NotNull
-    @DecimalMin("0.00")
+    @NotNull(message = "Custo de referência é obrigatório")
+    @DecimalMin(value = "0.00", message = "Custo não pode ser negativo")
     private BigDecimal custoReferencia;
 
-    @NotNull
-    @DecimalMin("0.00")
+    @NotNull(message = "Preço de venda é obrigatório")
+    @DecimalMin(value = "0.00", message = "Preço de venda não pode ser negativo")
     private BigDecimal precoVendaReferencia;
 
-    @NotNull
+    @NotNull(message = "Categoria é obrigatória")
     private Long idCategoria;
-
-    public ProdutoRequestDTO() {
-
-    }
-
-    public ProdutoRequestDTO(String nome, String descricao, BigDecimal custoReferencia, BigDecimal precoVendaReferencia, Long idCategoria) {
-        this.nome = nome;
-        this.descricao = descricao;
-        this.custoReferencia = custoReferencia;
-        this.precoVendaReferencia = precoVendaReferencia;
-        this.idCategoria = idCategoria;
-    }
 
 
 }

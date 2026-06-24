@@ -13,7 +13,7 @@ import lombok.Setter;
 public class CategoriaRequestDTO {
 
     @NotBlank
-    private String nome;
+    private String nomeCategoria;
 
     private String descricao;
 

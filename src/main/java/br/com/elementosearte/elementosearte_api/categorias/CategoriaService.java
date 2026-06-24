@@ -22,7 +22,7 @@ public class CategoriaService {
 
 
     public CategoriaResponseDTO criarCategoria(CategoriaRequestDTO categoriaRequestDTO) {
-        if (categoriaRepository.existsByNome(categoriaRequestDTO.getNome())) {
+        if (categoriaRepository.existsByNome(categoriaRequestDTO.getNomeCategoria())) {
             throw new BusinessException("Categoria já cadastrada");
         }
 
@@ -48,22 +48,21 @@ public class CategoriaService {
 
 
     public CategoriaResponseDTO atualizarCategoria(Long idCategoria, CategoriaRequestDTO categoriaRequestDTO) {
-        CategoriaEntity categoria = categoriaRepository.findByAtivoTrue(idCategoria)
+        CategoriaEntity categoria = categoriaRepository.findById(idCategoria)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
 
-        if (!categoria.getNome().equals(categoriaRequestDTO.getNome())
-                && categoriaRepository.existsByNome(categoriaRequestDTO.getNome())) {
+        if (!categoria.getNome().equals(categoriaRequestDTO.getNomeCategoria())
+                && categoriaRepository.existsByNome(categoriaRequestDTO.getNomeCategoria())) {
             throw new BusinessException("Categoria já cadastrada");
         }
 
-        categoria.setNome(categoriaRequestDTO.getNome());
+        categoria.setNome(categoriaRequestDTO.getNomeCategoria());
         categoria.setDescricao(categoriaRequestDTO.getDescricao());
 
         CategoriaEntity categoriaAtualizada = categoriaRepository.save(categoria);
 
         return categoriaMapperDto.toResponseDto(categoriaAtualizada);
     }
-
     public CategoriaResponseDTO inativarCategoria(Long idCategoria) {
         CategoriaEntity categoria = categoriaRepository.findById(idCategoria)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
@@ -73,9 +72,11 @@ public class CategoriaService {
         }
 
         categoria.setAtivo(false);
-        return categoriaMapperDto.toResponseDto(categoria);
-    }
 
+        CategoriaEntity categoriaInativada = categoriaRepository.save(categoria);
+
+        return categoriaMapperDto.toResponseDto(categoriaInativada);
+    }
 
     public CategoriaResponseDTO ativarCategoria(Long idCategoria) {
         CategoriaEntity categoria = categoriaRepository.findById(idCategoria)
@@ -86,10 +87,11 @@ public class CategoriaService {
         }
 
         categoria.setAtivo(true);
-        return categoriaMapperDto.toResponseDto(categoriaRepository.save(categoria));
+
+        CategoriaEntity categoriaAtivada = categoriaRepository.save(categoria);
+
+        return categoriaMapperDto.toResponseDto(categoriaAtivada);
     }
-
-
 
     public void deletarCategoria(Long idCategoria) {
         if (!categoriaRepository.existsById(idCategoria)) {

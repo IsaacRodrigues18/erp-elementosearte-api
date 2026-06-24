@@ -1,14 +1,21 @@
 package br.com.elementosearte.elementosearte_api.produtos.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProdutoResponseDTO {
 
+    private Long idCategoria;
+
+    private String nomeCategoria;
 
     private Long idProduto;
 
@@ -16,23 +23,11 @@ public class ProdutoResponseDTO {
 
     private String descricao;
 
+    private BigDecimal custoReferencia;
+
     private BigDecimal precoVendaReferencia;
-    
+
     private boolean ativo;
-
-    public ProdutoResponseDTO(){
-
-    }
-
-    public ProdutoResponseDTO(Long idProduto, String nome, String descricao,
-                              BigDecimal precoVendaReferencia, boolean ativo) {
-        this.idProduto = idProduto;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.precoVendaReferencia = precoVendaReferencia;
-        this.ativo = ativo;
-    }
-
 
 
 }

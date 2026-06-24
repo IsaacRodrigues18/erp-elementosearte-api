@@ -14,7 +14,7 @@ public class CategoriaResponseDTO {
 
     private Long idCategoria;
 
-    private String nome;
+    private String nomeCategoria;
 
     private String descricao;
 

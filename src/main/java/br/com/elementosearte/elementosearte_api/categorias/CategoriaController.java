@@ -44,6 +44,18 @@ public class CategoriaController {
         return ResponseEntity.ok(categoriaAtualizada);
     }
 
+    @PatchMapping("/inativar/{idCategoria}")
+    public ResponseEntity<CategoriaResponseDTO> inativarCategoria(@PathVariable Long idCategoria){
+       CategoriaResponseDTO categoriaInativa = categoriaService.inativarCategoria(idCategoria);
+       return ResponseEntity.ok(categoriaInativa);
+    }
+    @PatchMapping("/ativar/{idCategoria}")
+    public ResponseEntity<CategoriaResponseDTO> ativarCategoria(@PathVariable Long idCategoria){
+       CategoriaResponseDTO categoriaAtiva = categoriaService.ativarCategoria(idCategoria);
+       return ResponseEntity.ok(categoriaAtiva);
+    }
+
+
     @DeleteMapping("/{idCategoria}")
     public ResponseEntity<Void> deletarCategoria(@PathVariable Long idCategoria) {
         categoriaService.deletarCategoria(idCategoria);
