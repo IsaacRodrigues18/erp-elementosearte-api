@@ -1,6 +1,7 @@
 
 package br.com.elementosearte.elementosearte_api.movimentacao_estoque;
 
+import br.com.elementosearte.elementosearte_api.exceptions.ResourceNotFoundException;
 import br.com.elementosearte.elementosearte_api.movimentacao_estoque.dto.mapper.MovimentacaoEstoqueMapper;
 import br.com.elementosearte.elementosearte_api.movimentacao_estoque.dto.MovimentacaoEstoqueRequestDTO;
 import br.com.elementosearte.elementosearte_api.movimentacao_estoque.dto.MovimentacaoEstoqueResponseDTO;
@@ -37,10 +38,10 @@ public class MovimentacaoEstoqueService {
 
     public MovimentacaoEstoqueResponseDTO registrarMovimentacao(MovimentacaoEstoqueRequestDTO requestDTO) {
         ProdutoEntity produto = produtoRepository.findById(requestDTO.getIdProduto())
-                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
 
         UsuarioEntity usuario = usuarioRepository.findById(requestDTO.getIdUsuario())
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
         MovimentacaoEstoqueEntity entity = movimentacaoEstoqueMapper.toEntity(
                 requestDTO,
@@ -56,7 +57,7 @@ public class MovimentacaoEstoqueService {
 
     public MovimentacaoEstoqueResponseDTO buscarMovimentacaoPorId(Long idMovimentacao) {
         MovimentacaoEstoqueEntity movimentacaoEstoqueEntity = movimentacaoEstoqueRepository.findById(idMovimentacao)
-                .orElseThrow(() -> new IllegalArgumentException("Movimentação não encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Movimentação não encontrada"));
 
         return movimentacaoEstoqueMapper.toResponseDTO(movimentacaoEstoqueEntity);
     }
@@ -71,7 +72,7 @@ public class MovimentacaoEstoqueService {
 
     public List<MovimentacaoEstoqueResponseDTO> listarMovimentacoesPorProduto(Long idProduto) {
         produtoRepository.findById(idProduto)
-                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
 
         return movimentacaoEstoqueRepository
                 .findByProdutoIdProduto(idProduto)
@@ -82,7 +83,7 @@ public class MovimentacaoEstoqueService {
 
     public List<MovimentacaoEstoqueResponseDTO> listarMovimenacoesPorUsuario(Long idUsuario) {
         usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
         return movimentacaoEstoqueRepository
                 .findByUsuarioIdUsuario(idUsuario)
