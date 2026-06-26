@@ -34,8 +34,6 @@
         @JoinColumn(name = "id_usuario", nullable = false)
         private UsuarioEntity usuario;
 
-        @NotNull
-        @Positive
         @Column(name = "quantidade", nullable = false)
         private Integer quantidade;
 
@@ -57,8 +55,5 @@
         public void prePersist() {
             this.criadoEm = LocalDateTime.now();
         }
-
-
-
 
     }

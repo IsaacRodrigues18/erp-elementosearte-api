@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 public class ProdutoFornecedorRequestDTO {
 
     @NotNull(message = "Id do produto é obrigatório")
-    private  Long idProduto;
+    private Long idProduto;
 
     @NotNull(message = "Id do fornecedor é obrigatório")
     private Long idFornecedor;

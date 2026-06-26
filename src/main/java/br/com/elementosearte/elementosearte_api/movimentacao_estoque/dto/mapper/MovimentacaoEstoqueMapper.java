@@ -1,6 +1,8 @@
-package br.com.elementosearte.elementosearte_api.movimentacao_estoque.dto;
+package br.com.elementosearte.elementosearte_api.movimentacao_estoque.dto.mapper;
 
 import br.com.elementosearte.elementosearte_api.movimentacao_estoque.MovimentacaoEstoqueEntity;
+import br.com.elementosearte.elementosearte_api.movimentacao_estoque.dto.MovimentacaoEstoqueRequestDTO;
+import br.com.elementosearte.elementosearte_api.movimentacao_estoque.dto.MovimentacaoEstoqueResponseDTO;
 import br.com.elementosearte.elementosearte_api.produtos.ProdutoEntity;
 import br.com.elementosearte.elementosearte_api.usuarios.UsuarioEntity;
 import org.springframework.stereotype.Component;
@@ -8,51 +10,51 @@ import org.springframework.stereotype.Component;
 @Component
 public class MovimentacaoEstoqueMapper {
 
-    public MovimentacaoEstoqueResponseDTO toResponseDTO(MovimentacaoEstoqueEntity entity) {
+    public MovimentacaoEstoqueResponseDTO toResponseDTO(MovimentacaoEstoqueEntity movimentacaoEstoqueEntity) {
 
-        MovimentacaoEstoqueResponseDTO dto = new MovimentacaoEstoqueResponseDTO();
+        MovimentacaoEstoqueResponseDTO movimentacaoEstoqueResponseDTO = new MovimentacaoEstoqueResponseDTO();
 
-        dto.setIdMovimentacaoEstoque(entity.getIdMovimentacaoEstoque());
+        movimentacaoEstoqueResponseDTO.setIdMovimentacaoEstoque(movimentacaoEstoqueEntity.getIdMovimentacaoEstoque());
 
-        dto.setIdProduto(entity.getProduto().getIdProduto());
+        movimentacaoEstoqueResponseDTO.setIdProduto(movimentacaoEstoqueEntity.getProduto().getIdProduto());
 
-        dto.setNomeProduto(entity.getProduto().getNomeProduto());
+        movimentacaoEstoqueResponseDTO.setNomeProduto(movimentacaoEstoqueEntity.getProduto().getNomeProduto());
 
-        dto.setIdUsuario(entity.getUsuario().getIdUsuario());
+        movimentacaoEstoqueResponseDTO.setIdUsuario(movimentacaoEstoqueEntity.getUsuario().getIdUsuario());
 
-        dto.setNomeUsuario(entity.getUsuario().getNome());
+        movimentacaoEstoqueResponseDTO.setNomeUsuario(movimentacaoEstoqueEntity.getUsuario().getNome());
 
-        dto.setQuantidade(entity.getQuantidade());
+        movimentacaoEstoqueResponseDTO.setQuantidade(movimentacaoEstoqueEntity.getQuantidade());
 
-        dto.setValorUnitario(entity.getValorUnitario());
+        movimentacaoEstoqueResponseDTO.setValorUnitario(movimentacaoEstoqueEntity.getValorUnitario());
 
-        dto.setTipoMovimentacao(entity.getTipoMovimentacao());
+        movimentacaoEstoqueResponseDTO.setTipoMovimentacao(movimentacaoEstoqueEntity.getTipoMovimentacao());
 
-        dto.setObservacao(entity.getObservacao());
+        movimentacaoEstoqueResponseDTO.setObservacao(movimentacaoEstoqueEntity.getObservacao());
 
-        dto.setCriadoEm(entity.getCriadoEm());
+        movimentacaoEstoqueResponseDTO.setCriadoEm(movimentacaoEstoqueEntity.getCriadoEm());
 
-        return dto;
+        return movimentacaoEstoqueResponseDTO;
     }
 
-    public MovimentacaoEstoqueEntity toEntity(MovimentacaoEstoqueRequestDTO requestdto, ProdutoEntity produto,
+    public MovimentacaoEstoqueEntity toEntity(MovimentacaoEstoqueRequestDTO movimentacaoEstoqueRequestDTO, ProdutoEntity produto,
                                               UsuarioEntity usuario) {
 
-        MovimentacaoEstoqueEntity entity = new MovimentacaoEstoqueEntity();
+        MovimentacaoEstoqueEntity movimentacaoEstoqueEntity = new MovimentacaoEstoqueEntity();
 
-        entity.setProduto(produto);
+        movimentacaoEstoqueEntity.setProduto(produto);
 
-        entity.setUsuario(usuario);
+        movimentacaoEstoqueEntity.setUsuario(usuario);
 
-        entity.setQuantidade(requestdto.getQuantidade());
+        movimentacaoEstoqueEntity.setQuantidade(movimentacaoEstoqueRequestDTO.getQuantidade());
 
-        entity.setValorUnitario(requestdto.getValorUnitario());
+        movimentacaoEstoqueEntity.setValorUnitario(movimentacaoEstoqueRequestDTO.getValorUnitario());
 
-        entity.setTipoMovimentacao(requestdto.getTipoMovimentacao());
+        movimentacaoEstoqueEntity.setTipoMovimentacao(movimentacaoEstoqueRequestDTO.getTipoMovimentacao());
 
-        entity.setObservacao(requestdto.getObservacao());
+        movimentacaoEstoqueEntity.setObservacao(movimentacaoEstoqueRequestDTO.getObservacao());
 
-        return entity;
+        return movimentacaoEstoqueEntity;
 
     }
 

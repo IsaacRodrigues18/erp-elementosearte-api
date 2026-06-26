@@ -1,15 +1,7 @@
 
-/*
-registrarMovimentacao()
-buscarMovimentacaoPorId()
-listarMovimentacoes()
-listarMovimentacoesPorProduto()
-listarMovimentacoesPorUsuario()
-
-*/
 package br.com.elementosearte.elementosearte_api.movimentacao_estoque;
 
-import br.com.elementosearte.elementosearte_api.movimentacao_estoque.dto.MovimentacaoEstoqueMapper;
+import br.com.elementosearte.elementosearte_api.movimentacao_estoque.dto.mapper.MovimentacaoEstoqueMapper;
 import br.com.elementosearte.elementosearte_api.movimentacao_estoque.dto.MovimentacaoEstoqueRequestDTO;
 import br.com.elementosearte.elementosearte_api.movimentacao_estoque.dto.MovimentacaoEstoqueResponseDTO;
 import br.com.elementosearte.elementosearte_api.produtos.ProdutoEntity;
@@ -99,6 +91,4 @@ public class MovimentacaoEstoqueService {
                 .toList();
 
     }
-
-
 }
