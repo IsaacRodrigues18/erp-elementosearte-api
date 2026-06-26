@@ -55,6 +55,13 @@ public class MovimentacaoEstoqueService {
 
     }
 
+    public List<MovimentacaoEstoqueResponseDTO> listarMovimentacoes() {
+        return movimentacaoEstoqueRepository.findAll()
+                .stream()
+                .map(this.movimentacaoEstoqueMapper::toResponseDTO)
+                .toList();
+    }
+
     public MovimentacaoEstoqueResponseDTO buscarMovimentacaoPorId(Long idMovimentacao) {
         MovimentacaoEstoqueEntity movimentacaoEstoqueEntity = movimentacaoEstoqueRepository.findById(idMovimentacao)
                 .orElseThrow(() -> new ResourceNotFoundException("Movimentação não encontrada"));
@@ -62,13 +69,14 @@ public class MovimentacaoEstoqueService {
         return movimentacaoEstoqueMapper.toResponseDTO(movimentacaoEstoqueEntity);
     }
 
-
-    public List<MovimentacaoEstoqueResponseDTO> listarMovimentacoes() {
-        return movimentacaoEstoqueRepository.findAll()
+    public List<MovimentacaoEstoqueResponseDTO> listarPorTipoMovimentacao(TipoMovimentacao tipoMovimentacao) {
+        return movimentacaoEstoqueRepository
+                .findByTipoMovimentacao(tipoMovimentacao)
                 .stream()
-                .map(this.movimentacaoEstoqueMapper::toResponseDTO)
+                .map(movimentacaoEstoqueMapper::toResponseDTO)
                 .toList();
     }
+
 
     public List<MovimentacaoEstoqueResponseDTO> listarMovimentacoesPorProduto(Long idProduto) {
         produtoRepository.findById(idProduto)
