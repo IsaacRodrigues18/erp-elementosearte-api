@@ -14,8 +14,12 @@ import java.util.List;
 @RequestMapping("/produtos")
 public class ProdutoController {
 
-    @Autowired
-    private ProdutoService produtoService;
+    private final ProdutoService produtoService;
+
+
+    public ProdutoController(ProdutoService produtoService) {
+        this.produtoService = produtoService;
+    }
 
     @PostMapping
     public ResponseEntity<ProdutoResponseDTO> criarProduto(@RequestBody @Valid ProdutoRequestDTO produtoDTO) {
@@ -71,13 +75,15 @@ public class ProdutoController {
 
         return ResponseEntity.ok(produtoAtualizado);
     }
-    @PatchMapping("/{idProduto}/inativar")
-    public ResponseEntity<Void> inativarProduto(@PathVariable Long idProduto){
+
+    @PatchMapping("/inativar/{idProduto}")
+    public ResponseEntity<Void> inativarProduto(@PathVariable Long idProduto) {
         produtoService.inativarProduto(idProduto);
         return ResponseEntity.noContent().build();
     }
+
     @DeleteMapping("/{idProduto}")
-    public ResponseEntity<Void> deletarProduto(@PathVariable Long idProduto){
+    public ResponseEntity<Void> deletarProduto(@PathVariable Long idProduto) {
         produtoService.excluirProduto(idProduto);
         return ResponseEntity.noContent().build();
     }

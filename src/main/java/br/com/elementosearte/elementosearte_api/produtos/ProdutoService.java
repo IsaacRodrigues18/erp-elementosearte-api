@@ -117,6 +117,10 @@ public class ProdutoService {
         ProdutoEntity produto = produtoRepository.findById(idProduto)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
 
+        if (!produto.isAtivo()) {
+            throw new BusinessException("Produto já está inativo");
+        }
+
         produto.setAtivo(false);
         produtoRepository.save(produto);
     }
