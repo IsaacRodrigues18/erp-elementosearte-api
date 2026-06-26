@@ -36,7 +36,13 @@ public class ProdutoFornecedorController {
 
     @PatchMapping("/{idProdutoFornecedor}/desativarVinculo")
     public ResponseEntity<Void> inativarVinculo(@PathVariable Long idProdutoFornecedor) {
-        produtoFornecedorService.desativar(idProdutoFornecedor);
+        produtoFornecedorService.desativarRelacionametoProdutoFornecedor(idProdutoFornecedor);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{idProdutofornecedor}/ativarVinculo")
+    public ResponseEntity<Void> ativarVinculo(@PathVariable Long idProdutofornecedor) {
+        produtoFornecedorService.ativarRelacionamentoProdutoFornecedor(idProdutofornecedor);
         return ResponseEntity.noContent().build();
     }
 

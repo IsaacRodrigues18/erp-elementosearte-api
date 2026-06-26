@@ -1,12 +1,14 @@
 package br.com.elementosearte.elementosearte_api.produto_fornecedor;
 
+import br.com.elementosearte.elementosearte_api.exceptions.BusinessException;
+import br.com.elementosearte.elementosearte_api.exceptions.ResourceNotFoundException;
 import br.com.elementosearte.elementosearte_api.fornecedor.FornecedorEntity;
 import br.com.elementosearte.elementosearte_api.fornecedor.FornecedorRepository;
 import br.com.elementosearte.elementosearte_api.produto_fornecedor.dto.ProdutoFornecedorResponseDTO;
 import br.com.elementosearte.elementosearte_api.produto_fornecedor.dto.ProdutoFornecedorRequestDTO;
+import br.com.elementosearte.elementosearte_api.produto_fornecedor.dto.mapper.ProdutoFornecedorMapper;
 import br.com.elementosearte.elementosearte_api.produtos.ProdutoEntity;
 import br.com.elementosearte.elementosearte_api.produtos.ProdutoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,96 +16,102 @@ import java.util.List;
 @Service
 public class ProdutoFornecedorService {
 
-    @Autowired
-    private ProdutoFornecedorRepository produtoFornecedorRepository;
 
-    @Autowired
-    private ProdutoRepository produtoRepository;
+    private final ProdutoFornecedorRepository produtoFornecedorRepository;
 
-    @Autowired
-    private FornecedorRepository fornecedorRepository;
+    private final ProdutoRepository produtoRepository;
 
-    private ProdutoFornecedorResponseDTO toDTO(ProdutoFornecedorEntity produtoFornecedor) {
-        return new ProdutoFornecedorResponseDTO(
-                produtoFornecedor.getIdProdutoFornecedor(),
-                produtoFornecedor.getProduto().getIdProduto(),
-                produtoFornecedor.getFornecedor().getIdFornecedor(),
-                produtoFornecedor.isFornecedorPrincipal(),
-                produtoFornecedor.isAtivo(),
-                produtoFornecedor.getCustoFornecedor()
+    private final FornecedorRepository fornecedorRepository;
 
-        );
+    private final ProdutoFornecedorMapper produtoFornecedorMapper;
+
+    public ProdutoFornecedorService(ProdutoFornecedorRepository produtoFornecedorRepository,
+                                    ProdutoRepository produtoRepository,
+                                    FornecedorRepository fornecedorRepository, ProdutoFornecedorMapper produtoFornecedorMapper) {
+        this.produtoFornecedorRepository = produtoFornecedorRepository;
+        this.produtoRepository = produtoRepository;
+        this.fornecedorRepository = fornecedorRepository;
+        this.produtoFornecedorMapper = produtoFornecedorMapper;
     }
 
-    public ProdutoFornecedorResponseDTO vincularFornecedorAoProduto(ProdutoFornecedorRequestDTO dto) {
+
+    public ProdutoFornecedorResponseDTO vincularFornecedorAoProduto(ProdutoFornecedorRequestDTO produtoFornecedorRequestDTO) {
         if (produtoFornecedorRepository.existsByProduto_IdProdutoAndFornecedor_IdFornecedor(
-                dto.getIdProduto(),
-                dto.getIdFornecedor())) {
-            throw new IllegalArgumentException("Fornecedor já vinculado ao produto");
+                produtoFornecedorRequestDTO.getIdProduto(),
+                produtoFornecedorRequestDTO.getIdFornecedor())) {
+            throw new BusinessException("Fornecedor já vinculado ao produto");
         }
 
-        ProdutoEntity produto = produtoRepository.findById(dto.getIdProduto())
+        ProdutoEntity produto = produtoRepository.findById(produtoFornecedorRequestDTO.getIdProduto())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Produto não encontrado"));
+                        new ResourceNotFoundException("Produto não encontrado"));
 
-        FornecedorEntity fornecedor = fornecedorRepository.findById(dto.getIdFornecedor())
+        FornecedorEntity fornecedor = fornecedorRepository.findById(produtoFornecedorRequestDTO.getIdFornecedor())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Fornecedor não encontrado"));
+                        new ResourceNotFoundException("Fornecedor não encontrado"));
 
-        ProdutoFornecedorEntity produtoFornecedor = new ProdutoFornecedorEntity();
+        ProdutoFornecedorEntity produtoFornecedor = produtoFornecedorMapper.toEntity(produtoFornecedorRequestDTO, fornecedor, produto);
 
-        produtoFornecedor.setProduto(produto);
-        produtoFornecedor.setFornecedor(fornecedor);
-        produtoFornecedor.setFornecedorPrincipal(dto.isFornecedorPrincipal());
-        produtoFornecedor.setCustoFornecedor(dto.getCustoFornecedor());
+        ProdutoFornecedorEntity ProdutoFornecedorsalvo = produtoFornecedorRepository.save(produtoFornecedor);
 
-        ProdutoFornecedorEntity salvo = produtoFornecedorRepository.save(produtoFornecedor);
-
-        return toDTO(salvo);
+        return produtoFornecedorMapper.toResponseDTO(ProdutoFornecedorsalvo);
     }
 
     public List<ProdutoFornecedorResponseDTO> listarFornecedoresDoProduto(Long idProduto) {
 
         if (!produtoRepository.existsById(idProduto)) {
-            throw new IllegalArgumentException("Produto não existe");
+            throw new ResourceNotFoundException("Produto não existe");
         }
 
         return produtoFornecedorRepository
                 .findByProduto_IdProdutoAndAtivoTrue(idProduto)
                 .stream()
-                .map(this::toDTO)
+                .map(produtoFornecedorMapper::toResponseDTO)
                 .toList();
     }
 
 
     public List<ProdutoFornecedorResponseDTO> listarProdutosDoFornecedor(Long idFornecedor) {
         if (!fornecedorRepository.existsById(idFornecedor)) {
-            throw new IllegalArgumentException("Fornecedor não cadastrado");
+            throw new ResourceNotFoundException("Fornecedor não cadastrado");
         }
 
         return produtoFornecedorRepository
                 .findByFornecedor_IdFornecedorAndAtivoTrue(idFornecedor)
                 .stream()
-                .map(this::toDTO)
+                .map(produtoFornecedorMapper::toResponseDTO)
                 .toList();
 
     }
 
-    public void desativar(Long idProdutoFornecedor) {
+    public void desativarRelacionametoProdutoFornecedor(Long idProdutoFornecedor) {
         ProdutoFornecedorEntity produtoFornecedor = produtoFornecedorRepository.findById(idProdutoFornecedor)
-                .orElseThrow(() -> new IllegalArgumentException("Vínculo produto-fornecedor) não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Vínculo produto-fornecedor não encontrado"));
 
+        if (!produtoFornecedor.isAtivo()) {
+            throw new BusinessException("Vínculo produto-fornecedor já está desativado");
+        }
         produtoFornecedor.setAtivo(false);
+        produtoFornecedorRepository.save(produtoFornecedor);
+    }
+
+    public void ativarRelacionamentoProdutoFornecedor(Long idProdutoFornecedor) {
+        ProdutoFornecedorEntity produtoFornecedor = produtoFornecedorRepository.findById(idProdutoFornecedor)
+                .orElseThrow(() -> new ResourceNotFoundException("Vínculo produto-fornecedor não encontrado"));
+
+        if (produtoFornecedor.isAtivo()) {
+            throw new BusinessException("Vínculo produto-fornecedor já está ativo");
+        }
+
+        produtoFornecedor.setAtivo(true);
         produtoFornecedorRepository.save(produtoFornecedor);
 
     }
 
     public void deletar(Long idProdutoFornecedor) {
-
         if (!produtoFornecedorRepository.existsById(idProdutoFornecedor)) {
-            throw new IllegalArgumentException("Vínculo produto-fornecedor não encontrado");
+            throw new ResourceNotFoundException("Vínculo produto-fornecedor não encontrado");
         }
-
         produtoFornecedorRepository.deleteById(idProdutoFornecedor);
     }
 
