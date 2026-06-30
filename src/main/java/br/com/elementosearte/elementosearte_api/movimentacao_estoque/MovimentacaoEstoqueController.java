@@ -32,7 +32,7 @@ public class MovimentacaoEstoqueController {
         return ResponseEntity.ok(listarMovimentacoes);
     }
 
-    @GetMapping("/buscarPorId/{idMovimentacaoEstoque}")
+        @GetMapping("/buscarPorId/{idMovimentacaoEstoque}")
     ResponseEntity<MovimentacaoEstoqueResponseDTO> buscarMovimentacaoPorId(@PathVariable Long idMovimentacaoEstoque) {
         MovimentacaoEstoqueResponseDTO movimentacaoEstoqueResponseDTO =
                 movimentacaoEstoqueService.buscarMovimentacaoPorId(idMovimentacaoEstoque);
