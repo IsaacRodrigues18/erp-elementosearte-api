@@ -38,12 +38,20 @@ public class FornecedorService {
 
     }
 
+    public List<FornecedorResponseDTO> listarFornecedores() {
+        return fornecedorRepository.findAll().
+                stream().
+                map(fornecedorMapperDto::toResponseDto).
+                toList();
+    }
+
     public List<FornecedorResponseDTO> listarFornecedoresAtivos() {
         return fornecedorRepository.findByAtivoTrue().
                 stream().
                 map(fornecedorMapperDto::toResponseDto).
                 toList();
     }
+
 
     public List<FornecedorResponseDTO> listarFornecedoresPorCidade(String cidade) {
         return fornecedorRepository.findByCidadeAndAtivoTrue(cidade)
@@ -81,6 +89,7 @@ public class FornecedorService {
         fornecedor.setAtivo(true);
         fornecedorRepository.save(fornecedor);
     }
+
 
     public void deletarFornecedor(Long idFornecedor) {
         FornecedorEntity fornecedor = fornecedorRepository.findById(idFornecedor).
