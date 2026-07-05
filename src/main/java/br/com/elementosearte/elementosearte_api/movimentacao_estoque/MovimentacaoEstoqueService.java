@@ -36,7 +36,7 @@ public class MovimentacaoEstoqueService {
 
     }
 
-    public MovimentacaoEstoqueResponseDTO registrarMovimentacao(MovimentacaoEstoqueRequestDTO requestDTO) {
+    public MovimentacaoEstoqueResponseDTO registrrMovimentacao(MovimentacaoEstoqueRequestDTO requestDTO) {
         ProdutoEntity produto = produtoRepository.findById(requestDTO.getIdProduto())
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
 
