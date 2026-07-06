@@ -1,0 +1,2 @@
+ALTER TABLE tb_vendas
+ADD COLUMN status_venda VARCHAR(20) NOT NULL DEFAULT 'ATIVA';

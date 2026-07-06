@@ -21,9 +21,6 @@ public class VendasRequestDto {
     @NotBlank(message = "Forma de pagamento não pode ser nula")
     private String formaPagamento;
 
-    @NotNull(message = "O valor total deve ser informado")
-    private BigDecimal valorTotal;
-
     @Valid
     @NotEmpty(message = "A venda deve possuir pelo menos um item")
     private List<VendasItemRequestDto> itens;

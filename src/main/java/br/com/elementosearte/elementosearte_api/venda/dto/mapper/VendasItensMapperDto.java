@@ -1,6 +1,7 @@
 package br.com.elementosearte.elementosearte_api.venda.dto.mapper;
 
 import br.com.elementosearte.elementosearte_api.produtos.ProdutoEntity;
+import br.com.elementosearte.elementosearte_api.venda.VendasEntity;
 import br.com.elementosearte.elementosearte_api.venda.VendasItensEntity;
 import br.com.elementosearte.elementosearte_api.venda.dto.VendasItemRequestDto;
 import br.com.elementosearte.elementosearte_api.venda.dto.VendasItensResponseDto;
@@ -10,17 +11,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class VendasItensMapperDto {
 
-    public VendasItensEntity toEntity(VendasItemRequestDto vendasItemRequestDto, ProdutoEntity produto) {
-        VendasItensEntity vendaItemEntity = new VendasItensEntity();
-        vendaItemEntity.setProduto(produto);
-        vendaItemEntity.setQuantidade(vendasItemRequestDto.getQuantidade());
-        vendaItemEntity.setValorUnitario(vendasItemRequestDto.getValorUnitario());
-        vendaItemEntity.setTipoDesconto(vendasItemRequestDto.getTipoDesconto());
-        vendaItemEntity.setValorDesconto(vendasItemRequestDto.getValorDesconto());
-        vendaItemEntity.setSubTotal(vendasItemRequestDto.getSubTotal());
-        return vendaItemEntity;
-    }
+    public VendasItensEntity toEntity(
+            VendasItemRequestDto dto,
+            ProdutoEntity produto,
+            VendasEntity venda) {
 
+        VendasItensEntity entity = new VendasItensEntity();
+
+        entity.setProduto(produto);
+        entity.setVenda(venda);
+
+        entity.setQuantidade(dto.getQuantidade());
+        entity.setValorUnitario(dto.getValorUnitario());
+        entity.setTipoDesconto(dto.getTipoDesconto());
+        entity.setValorDesconto(dto.getValorDesconto());
+        entity.setSubTotal(dto.getSubTotal());
+
+        return entity;
+    }
         public VendasItensResponseDto toResponseDto(VendasItensEntity vendasItensEntity){
             VendasItensResponseDto vendasItensResponseDto = new VendasItensResponseDto(
                     vendasItensEntity.getIdVendaItem(),

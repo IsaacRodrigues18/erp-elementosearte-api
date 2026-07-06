@@ -28,7 +28,7 @@ public class VendasItemRequestDto {
 
     private  BigDecimal valorDesconto;
 
-    @NotNull(message = "O sub total deve ser informado")
     private BigDecimal subTotal;
+
 
 }

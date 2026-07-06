@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,9 +26,13 @@ public class VendasEntity {
     @JoinColumn(name = "id_usuario", nullable = false)
     private UsuarioEntity usuario;
 
-    @NotBlank
+    @Enumerated(EnumType.STRING)
     @Column(name = "forma_pagamento", nullable = false, length = 50)
-    private String formaPagamento;
+    private FormaPagamento formaPagamento;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_venda", nullable = false, length = 20)
+    private StatusVenda statusVenda;
 
     @Column(name = "valor_total", nullable = false)
     private BigDecimal valorTotal;
@@ -38,5 +43,9 @@ public class VendasEntity {
     @PrePersist
     public void prePersist() {
         this.criadoEm = LocalDateTime.now();
+        this.statusVenda = StatusVenda.ATIVA;
     }
+
+    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VendasItensEntity> itens;
 }
