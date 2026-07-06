@@ -22,7 +22,7 @@ public class MovimentacaoEstoqueController {
 
     @PostMapping
     public ResponseEntity<MovimentacaoEstoqueResponseDTO> registrarMovimentacao(@RequestBody @Valid MovimentacaoEstoqueRequestDTO movimentacaoEstoqueRequestDTO) {
-        MovimentacaoEstoqueResponseDTO movimentacaoEstoqueResponseDTO = movimentacaoEstoqueService.registrarMovimentacao(movimentacaoEstoqueRequestDTO);
+        MovimentacaoEstoqueResponseDTO movimentacaoEstoqueResponseDTO = movimentacaoEstoqueService.registrrMovimentacao(movimentacaoEstoqueRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(movimentacaoEstoqueResponseDTO);
     }
 

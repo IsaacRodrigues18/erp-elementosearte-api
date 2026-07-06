@@ -7,7 +7,7 @@ CREATE TABLE tb_vendas_item
     valor_unitario DECIMAL(10, 2) NOT NULL,
     tipo_desconto  VARCHAR(30),
     valor_desconto DECIMAL(10, 2),
-    sub_tot al      DECIMAL(10, 2) NOT NULL,
+    sub_total DECIMAL(10, 2) NOT NULL,
 
     CONSTRAINT fk_venda_item_venda
         FOREIGN KEY (id_venda)

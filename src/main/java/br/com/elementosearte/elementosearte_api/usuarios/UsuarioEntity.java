@@ -1,6 +1,7 @@
     package br.com.elementosearte.elementosearte_api.usuarios;
 
     import br.com.elementosearte.elementosearte_api.produtos.ProdutoEntity;
+    import br.com.elementosearte.elementosearte_api.venda.VendasEntity;
     import jakarta.persistence.*;
     import jakarta.validation.constraints.Email;
     import jakarta.validation.constraints.NotBlank;
@@ -63,6 +64,9 @@
 
         @OneToMany(mappedBy = "atualizadoPorUsuario")
         private List<ProdutoEntity> produtosAtualizados;
+
+        @OneToMany(mappedBy = "vendasPorUsuario")
+        private List<VendasEntity> VendasDeUsuario;
 
 
     }
