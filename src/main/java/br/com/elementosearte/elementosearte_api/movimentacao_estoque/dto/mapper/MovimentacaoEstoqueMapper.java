@@ -10,6 +10,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class MovimentacaoEstoqueMapper {
 
+    public MovimentacaoEstoqueEntity toEntity(MovimentacaoEstoqueRequestDTO movimentacaoEstoqueRequestDTO, ProdutoEntity produto,
+                                              UsuarioEntity usuario) {
+
+        MovimentacaoEstoqueEntity movimentacaoEstoqueEntity = new MovimentacaoEstoqueEntity();
+
+        movimentacaoEstoqueEntity.setProduto(produto);
+
+        movimentacaoEstoqueEntity.setUsuario(usuario);
+
+        movimentacaoEstoqueEntity.setQuantidade(movimentacaoEstoqueRequestDTO.getQuantidade());
+
+        movimentacaoEstoqueEntity.setValorUnitario(movimentacaoEstoqueRequestDTO.getValorUnitario());
+
+        movimentacaoEstoqueEntity.setTipoMovimentacao(movimentacaoEstoqueRequestDTO.getTipoMovimentacao());
+
+        movimentacaoEstoqueEntity.setObservacao(movimentacaoEstoqueRequestDTO.getObservacao());
+
+        return movimentacaoEstoqueEntity;
+
+    }
+
     public MovimentacaoEstoqueResponseDTO toResponseDTO(MovimentacaoEstoqueEntity movimentacaoEstoqueEntity) {
 
         MovimentacaoEstoqueResponseDTO movimentacaoEstoqueResponseDTO = new MovimentacaoEstoqueResponseDTO();
@@ -35,27 +56,6 @@ public class MovimentacaoEstoqueMapper {
         movimentacaoEstoqueResponseDTO.setCriadoEm(movimentacaoEstoqueEntity.getCriadoEm());
 
         return movimentacaoEstoqueResponseDTO;
-    }
-
-    public MovimentacaoEstoqueEntity toEntity(MovimentacaoEstoqueRequestDTO movimentacaoEstoqueRequestDTO, ProdutoEntity produto,
-                                              UsuarioEntity usuario) {
-
-        MovimentacaoEstoqueEntity movimentacaoEstoqueEntity = new MovimentacaoEstoqueEntity();
-
-        movimentacaoEstoqueEntity.setProduto(produto);
-
-        movimentacaoEstoqueEntity.setUsuario(usuario);
-
-        movimentacaoEstoqueEntity.setQuantidade(movimentacaoEstoqueRequestDTO.getQuantidade());
-
-        movimentacaoEstoqueEntity.setValorUnitario(movimentacaoEstoqueRequestDTO.getValorUnitario());
-
-        movimentacaoEstoqueEntity.setTipoMovimentacao(movimentacaoEstoqueRequestDTO.getTipoMovimentacao());
-
-        movimentacaoEstoqueEntity.setObservacao(movimentacaoEstoqueRequestDTO.getObservacao());
-
-        return movimentacaoEstoqueEntity;
-
     }
 
 
