@@ -50,6 +50,9 @@ public class ProdutoEntity {
     @Column(name = "ativo", nullable = false)
     private boolean ativo = true;
 
+    @Column(name = "quantidade_estoque", nullable = false)
+    private Integer quantidadeEstoque = 0;
+
     @Column(name = "criado_em", nullable = false)
     private LocalDateTime criadoEm;
 

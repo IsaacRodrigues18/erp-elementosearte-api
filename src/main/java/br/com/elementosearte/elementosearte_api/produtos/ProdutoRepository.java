@@ -12,5 +12,8 @@ public interface ProdutoRepository extends JpaRepository<ProdutoEntity, Long> {
 
     List<ProdutoEntity> findByAtivoFalse();
 
-    List<ProdutoEntity> findAllByOrderByPrecoVendaReferenciaDesc();;
+    List<ProdutoEntity> findAllByOrderByPrecoVendaReferenciaDesc();
+
+    List<ProdutoEntity> findByQuantidadeEstoqueLessThanEqual(Integer quantidadeEstoque);
+
 }

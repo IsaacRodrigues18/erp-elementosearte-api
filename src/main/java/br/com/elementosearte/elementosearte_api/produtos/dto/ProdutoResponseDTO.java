@@ -27,6 +27,8 @@ public class ProdutoResponseDTO {
 
     private BigDecimal precoVendaReferencia;
 
+    private Integer quantidadeEstoque;
+
     private boolean ativo;
 
 

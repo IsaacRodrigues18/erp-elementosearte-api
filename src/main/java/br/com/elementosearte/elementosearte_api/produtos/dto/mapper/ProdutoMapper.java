@@ -29,6 +29,7 @@ public class ProdutoMapper {
                 produtoEntity.getDescricaoProduto(),
                 produtoEntity.getCustoReferencia(),
                 produtoEntity.getPrecoVendaReferencia(),
+                produtoEntity.getQuantidadeEstoque(),
                 produtoEntity.isAtivo()
         );
         return produtoDTO;
