@@ -1,5 +1,6 @@
 package br.com.elementosearte.elementosearte_api.venda.dto;
 
+import br.com.elementosearte.elementosearte_api.venda.FormaPagamento;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -19,7 +20,7 @@ import java.util.List;
 public class VendasRequestDto {
 
     @NotBlank(message = "Forma de pagamento não pode ser nula")
-    private String formaPagamento;
+    private FormaPagamento formaPagamento;
 
     @Valid
     @NotEmpty(message = "A venda deve possuir pelo menos um item")

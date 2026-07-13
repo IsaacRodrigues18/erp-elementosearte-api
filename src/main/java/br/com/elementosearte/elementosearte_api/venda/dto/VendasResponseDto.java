@@ -1,6 +1,7 @@
 package br.com.elementosearte.elementosearte_api.venda.dto;
 
 import br.com.elementosearte.elementosearte_api.usuarios.UsuarioEntity;
+import br.com.elementosearte.elementosearte_api.venda.FormaPagamento;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ public class VendasResponseDto {
 
     private String nomeUsuario;
 
-    private String formaPagamento;
+    private FormaPagamento formaPagamento;
 
     private BigDecimal valorTotal;
 }

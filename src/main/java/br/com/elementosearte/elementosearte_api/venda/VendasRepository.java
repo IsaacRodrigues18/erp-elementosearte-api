@@ -10,4 +10,8 @@ public interface VendasRepository extends JpaRepository<VendasEntity, Long> {
    List<VendasEntity> findByCriadoEmBetween(LocalDateTime inicio, LocalDateTime fim);
 
    List<VendasEntity> findByUsuarioIdUsuario(Long idUsuario);
+
+   List<VendasEntity> findTop5ByOrderByCriadoEmDesc();
+
+   Long countByCriadoEmBetween(LocalDateTime inicio, LocalDateTime fim);
 }

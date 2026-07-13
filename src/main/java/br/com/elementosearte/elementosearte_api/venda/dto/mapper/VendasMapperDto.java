@@ -12,7 +12,6 @@ public class VendasMapperDto {
     public VendasEntity toEntity(VendasRequestDto requestDto) {
         VendasEntity entity = new VendasEntity();
         entity.setFormaPagamento(requestDto.getFormaPagamento());
-        entity.setValorTotal(requestDto.getValorTotal());
         return entity;
     }
 
