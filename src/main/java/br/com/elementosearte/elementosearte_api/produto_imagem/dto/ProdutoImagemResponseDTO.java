@@ -1,6 +1,5 @@
 package br.com.elementosearte.elementosearte_api.produto_imagem.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,10 +21,13 @@ public class ProdutoImagemResponseDTO {
 
     private String urlImagem;
 
+    private String tipoArquivo;
+
+    private Long tamanhoArquivo;
+
     private boolean principal;
 
     private boolean ativo;
 
     private Integer ordemExibicao;
-
 }
