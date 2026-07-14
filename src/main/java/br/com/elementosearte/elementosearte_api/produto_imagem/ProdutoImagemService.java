@@ -1,171 +1,287 @@
 package br.com.elementosearte.elementosearte_api.produto_imagem;
 
+import br.com.elementosearte.elementosearte_api.exceptions.BusinessException;
+import br.com.elementosearte.elementosearte_api.exceptions.ResourceNotFoundException;
 import br.com.elementosearte.elementosearte_api.produto_imagem.dto.ProdutoImagemRequestDTO;
 import br.com.elementosearte.elementosearte_api.produto_imagem.dto.ProdutoImagemResponseDTO;
+import br.com.elementosearte.elementosearte_api.produto_imagem.dto.mapper.ProdutoImagemMapper;
 import br.com.elementosearte.elementosearte_api.produtos.ProdutoEntity;
 import br.com.elementosearte.elementosearte_api.produtos.ProdutoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
 
 @Service
 public class ProdutoImagemService {
 
-    @Autowired
-    private ProdutoImagemRepository produtoImagemRepository;
+    private static final long TAMANHO_MAXIMO_ARQUIVO =
+            5 * 1024 * 1024;
 
-    @Autowired
-    private ProdutoRepository produtoRepository;
-}
-    /*private ProdutoImagemResponseDTO toDTO(
-            ProdutoImagemEntity produtoImagem
+    private static final Set<String> TIPOS_PERMITIDOS = Set.of(
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+    );
+
+    private final ProdutoImagemRepository produtoImagemRepository;
+    private final ProdutoRepository produtoRepository;
+    private final ProdutoImagemMapper produtoImagemMapper;
+
+    public ProdutoImagemService(
+            ProdutoImagemRepository produtoImagemRepository,
+            ProdutoRepository produtoRepository,
+            ProdutoImagemMapper produtoImagemMapper
     ) {
-        return new ProdutoImagemResponseDTO(
-                produtoImagem.getIdProdutoImagem(),
-                produtoImagem.getProduto().getIdProduto(),
-                produtoImagem.getProduto().getNomeProduto(),
-                produtoImagem.getNomeArquivo(),
-                produtoImagem.getUrlImagem(),
-                produtoImagem.isPrincipal(),
-                produtoImagem.isAtivo(),
-                produtoImagem.getOrdemExibicao()
-        );
-    /
+        this.produtoImagemRepository = produtoImagemRepository;
+        this.produtoRepository = produtoRepository;
+        this.produtoImagemMapper = produtoImagemMapper;
+    }
 
+    @Transactional
+    public ProdutoImagemResponseDTO adicionarImagemAoProduto( ProdutoImagemRequestDTO dto, MultipartFile arquivo) {
+        validarArquivo(arquivo);
 
-    public ProdutoImagemResponseDTO adicionarImagemAoProduto(ProdutoImagemRequestDTO dto) {
-
-        ProdutoEntity produto = produtoRepository.findById(dto.getIdProduto())
-                .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
+        ProdutoEntity produto = produtoRepository
+                .findById(dto.getIdProduto())
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
 
         if (dto.isPrincipal()) {
+            removerImagemPrincipalAtual(produto.getIdProduto());
+        }
 
-            List<ProdutoImagemEntity> imagensDoProduto =
-                    produtoImagemRepository.findByProdutoIdProduto(
-                            produto.getIdProduto()
+        definirOrdemPadrao(dto, produto.getIdProduto());
+        try {
+            ProdutoImagemEntity produtoImagem =
+                    produtoImagemMapper.toEntity(
+                            dto,
+                            produto,
+                            arquivo.getBytes(),
+                            obterNomeArquivo(arquivo),
+                            arquivo.getContentType(),
+                            arquivo.getSize()
                     );
 
-            imagensDoProduto.forEach(imagem -> imagem.setPrincipal(false));
+            ProdutoImagemEntity imagemSalva = produtoImagemRepository.save(produtoImagem);
 
-            produtoImagemRepository.saveAll(imagensDoProduto);
+            return produtoImagemMapper.toResponseDTO(imagemSalva
+            );
+
+        } catch (IOException erro) {
+            throw new BusinessException("Não foi possível processar o arquivo da imagem");
         }
-
-        ProdutoImagemEntity produtoImagem = new ProdutoImagemEntity();
-
-        produtoImagem.setProduto(produto);
-        produtoImagem.setUrlImagem(dto.getUrlImagem());
-        produtoImagem.setNomeArquivo(dto.getNomeArquivo());
-        produtoImagem.setPrincipal(dto.isPrincipal());
-
-        produtoImagem.setOrdemExibicao(
-                dto.getOrdemExibicao() != null
-                        ? dto.getOrdemExibicao()
-                        : 1
-        );
-
-        ProdutoImagemEntity salvo =
-                produtoImagemRepository.save(produtoImagem);
-
-        return toDTO(salvo);
     }
 
-
-    public List<ProdutoImagemResponseDTO> listarImagensDoProduto(Long idProduto) {
-        if (!produtoRepository.existsById(idProduto)) {
-            throw new IllegalArgumentException("Produto não encontrado");
-        }
-
-        return produtoImagemRepository.findByProdutoIdProduto(idProduto)
-                .stream()
-                .map(this::toDTO)
-                .toList();
-    }
-
-    public List<ProdutoImagemResponseDTO> listarImagensAtivas(Long idProduto) {
-
-        if (!produtoRepository.existsById(idProduto)) {
-            throw new IllegalArgumentException("Produto não encontrado");
-        }
+    public List<ProdutoImagemResponseDTO>listarImagensDoProduto(Long idProduto) {
+        validarExistenciaProduto(idProduto);
 
         return produtoImagemRepository
-                .findByProdutoIdProdutoAndAtivoTrue(idProduto)
+                .findByProduto_IdProduto(idProduto)
                 .stream()
-                .map(this::toDTO)
+                .map(produtoImagemMapper::toResponseDTO)
                 .toList();
     }
 
-    public ProdutoImagemResponseDTO definirImagemPrincipal(Long idImagem) {
+    public List<ProdutoImagemResponseDTO>listarImagensAtivas(Long idProduto) {
+        validarExistenciaProduto(idProduto);
 
-        ProdutoImagemEntity imagemPrincipal = buscarImagem(idImagem);
+        return produtoImagemRepository
+                .findByProduto_IdProdutoAndAtivoTrue(idProduto)
+                .stream()
+                .map(produtoImagemMapper::toResponseDTO)
+                .toList();
+    }
+
+    @Transactional
+    public ProdutoImagemResponseDTO definirImagemPrincipal(Long idProdutoImagem) {
+        ProdutoImagemEntity imagemPrincipal = buscarImagemPorId(idProdutoImagem);
+
+        if (!imagemPrincipal.isAtivo()) {
+            throw new BusinessException("Não é possível definir uma imagem inativa como principal");
+        }
 
         Long idProduto = imagemPrincipal.getProduto().getIdProduto();
 
-        List<ProdutoImagemEntity> imagensDoProduto =
-                produtoImagemRepository.findByProdutoIdProduto(idProduto);
+        List<ProdutoImagemEntity> imagensDoProduto = produtoImagemRepository
+                .findByProduto_IdProduto(idProduto);
 
-        for (ProdutoImagemEntity imagem : imagensDoProduto) {
-            imagem.setPrincipal(false);
-        }
+        imagensDoProduto.forEach(imagem -> imagem.setPrincipal(false));
 
         imagemPrincipal.setPrincipal(true);
 
         produtoImagemRepository.saveAll(imagensDoProduto);
 
-        return toDTO(imagemPrincipal);
+        return produtoImagemMapper.toResponseDTO(imagemPrincipal);
     }
 
-    private ProdutoImagemEntity buscarImagem(Long idImagem) {
-        return produtoImagemRepository.findById(idImagem)
-                .orElseThrow(() -> new IllegalArgumentException("Imagem não encontrada"));
-    }
-
+    @Transactional
     public List<ProdutoImagemResponseDTO> ordenarImagemManualmente(Long idProdutoImagem, Integer novaOrdem) {
-
         if (novaOrdem == null || novaOrdem < 1) {
-            throw new IllegalArgumentException("Ordem inválida");
+            throw new BusinessException("A nova ordem deve ser maior ou igual a 1");
         }
 
-        ProdutoImagemEntity imagemMovida = buscarImagem(idProdutoImagem);
+        ProdutoImagemEntity imagemMovida = buscarImagemPorId(idProdutoImagem);
+
+        if (!imagemMovida.isAtivo()) {
+            throw new BusinessException("Não é possível ordenar uma imagem inativa");
+        }
 
         Long idProduto = imagemMovida.getProduto().getIdProduto();
 
         List<ProdutoImagemEntity> imagens = produtoImagemRepository
-                .findByProdutoIdProdutoAndAtivoTrueOrderByOrdemExibicaoAsc(idProduto);
+                .findByProduto_IdProdutoAndAtivoTrueOrderByOrdemExibicaoAsc(idProduto);
 
         if (novaOrdem > imagens.size()) {
-            throw new IllegalArgumentException("Ordem inválida");
+            throw new BusinessException("A nova ordem é maior que a quantidade de imagens");
         }
 
-        imagens.removeIf(img ->
-                img.getIdProdutoImagem().equals(idProdutoImagem)
-        );
+        imagens.removeIf(imagem -> imagem.getIdProdutoImagem().equals(idProdutoImagem));
 
         imagens.add(novaOrdem - 1, imagemMovida);
 
-        for (int i = 0; i < imagens.size(); i++) {
-            imagens.get(i).setOrdemExibicao(i + 1);
+        for (int indice = 0; indice < imagens.size(); indice++) {
+
+            imagens.get(indice)
+                    .setOrdemExibicao(indice + 1);
         }
 
-        produtoImagemRepository.saveAll(imagens);
+        List<ProdutoImagemEntity> imagensSalvas =
+                produtoImagemRepository.saveAll(
+                        imagens
+                );
 
-        return imagens.stream()
-                .map(this::toDTO)
+        return imagensSalvas
+                .stream()
+                .map(produtoImagemMapper::toResponseDTO)
                 .toList();
     }
 
-    public ProdutoImagemResponseDTO deletarImagem(Long idProdutoImagem) {
-        ProdutoImagemEntity imagem = buscarImagem(idProdutoImagem);
+    @Transactional
+    public void deletarImagem(Long idProdutoImagem) {
+        ProdutoImagemEntity imagem =
+                buscarImagemPorId(idProdutoImagem);
+
+        if (!imagem.isAtivo()) {
+            throw new BusinessException("A imagem já está inativa");
+        }
+
+        boolean eraPrincipal = imagem.isPrincipal();
+
+        Long idProduto = imagem.getProduto().getIdProduto();
 
         imagem.setAtivo(false);
+        imagem.setPrincipal(false);
 
-        return toDTO(produtoImagemRepository.save(imagem));
+        produtoImagemRepository.save(imagem);
+
+        if (eraPrincipal) {
+            definirNovaImagemPrincipal(idProduto);
+        }
+
+        reorganizarOrdemDasImagens(idProduto);
     }
 
+    public ProdutoImagemEntity buscarImagemPorId(
+            Long idProdutoImagem
+    ) {
+        return produtoImagemRepository
+                .findById(idProdutoImagem)
+                .orElseThrow(() -> new ResourceNotFoundException("Imagem não encontrada"));
+    }
 
-}*/
+    public byte[] buscarDadosImagem(
+            Long idProdutoImagem
+    ) {
+        ProdutoImagemEntity imagem = buscarImagemPorId(idProdutoImagem);
 
+        if (!imagem.isAtivo()) {
+            throw new ResourceNotFoundException("Imagem não encontrada");
+        }
 
+        return imagem.getDadosImagem();
+    }
 
+    private void validarArquivo(
+            MultipartFile arquivo
+    ) {
+        if (arquivo == null || arquivo.isEmpty()) {
+            throw new BusinessException("O arquivo da imagem é obrigatório");
+        }
 
+        if (arquivo.getSize() > TAMANHO_MAXIMO_ARQUIVO) {
+            throw new BusinessException("A imagem deve possuir no máximo 5 MB");
+        }
+
+        String tipoArquivo =
+                arquivo.getContentType();
+
+        if (tipoArquivo == null || !TIPOS_PERMITIDOS.contains(tipoArquivo)) {
+            throw new BusinessException("Formato de imagem inválido. " + "Utilize JPEG, PNG ou WEBP");
+        }
+    }
+
+    private String obterNomeArquivo(MultipartFile arquivo) {
+        String nomeOriginal = arquivo.getOriginalFilename();
+
+        if (nomeOriginal == null || nomeOriginal.isBlank()) {
+            return "imagem";
+        }
+        return nomeOriginal;
+    }
+
+    private void validarExistenciaProduto(Long idProduto) {
+        if (!produtoRepository.existsById(idProduto)) {
+            throw new ResourceNotFoundException("Produto não encontrado");
+        }
+    }
+
+    private void definirOrdemPadrao(ProdutoImagemRequestDTO dto, Long idProduto) {
+        if (dto.getOrdemExibicao() != null && dto.getOrdemExibicao() >= 1) {
+            return;
+        }
+
+        int quantidadeImagensAtivas = produtoImagemRepository
+                .findByProduto_IdProdutoAndAtivoTrue(idProduto)
+                .size();
+
+        dto.setOrdemExibicao(quantidadeImagensAtivas + 1);
+    }
+
+    private void removerImagemPrincipalAtual(Long idProduto) {
+        List<ProdutoImagemEntity> imagens = produtoImagemRepository
+                        .findByProduto_IdProduto(idProduto);
+
+        imagens.forEach(imagem -> imagem.setPrincipal(false));
+
+        produtoImagemRepository.saveAll(imagens);
+    }
+
+    private void definirNovaImagemPrincipal(Long idProduto) {
+        List<ProdutoImagemEntity> imagensAtivas = produtoImagemRepository
+                        .findByProduto_IdProdutoAndAtivoTrueOrderByOrdemExibicaoAsc(idProduto);
+
+        if (imagensAtivas.isEmpty()) {
+            return;
+        }
+
+        ProdutoImagemEntity novaPrincipal = imagensAtivas.get(0);
+
+        novaPrincipal.setPrincipal(true);
+
+        produtoImagemRepository.save(novaPrincipal);
+    }
+
+    private void reorganizarOrdemDasImagens(Long idProduto) {
+        List<ProdutoImagemEntity> imagensAtivas =
+                produtoImagemRepository.findByProduto_IdProdutoAndAtivoTrueOrderByOrdemExibicaoAsc(idProduto);
+
+        for (int indice = 0; indice < imagensAtivas.size(); indice++) {
+            imagensAtivas.get(indice).setOrdemExibicao(indice + 1);
+        }
+        produtoImagemRepository.saveAll(imagensAtivas
+        );
+    }
+}
