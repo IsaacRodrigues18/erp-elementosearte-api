@@ -13,6 +13,10 @@
     @Setter
     public class ProdutoFornecedorResponseDTO {
 
+        private String nomeProduto;
+
+        private String nomeFornecedor;
+
         private Long idProdutoFornecedor;
 
         private Long idProduto;

@@ -125,6 +125,17 @@ public class ProdutoService {
         produtoRepository.save(produto);
     }
 
+    public void ativarProduto(Long idProduto) {
+        ProdutoEntity produto = produtoRepository.findById(idProduto)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Produto não encontrado.")
+                );
+
+        produto.setAtivo(true);
+
+        produtoRepository.save(produto);
+    }
+
     public void excluirProduto(Long idProduto) {
         if (!produtoRepository.existsById(idProduto)) {
             throw new ResourceNotFoundException("Produto não encontrado");

@@ -57,6 +57,13 @@ public class ProdutoFornecedorService {
         return produtoFornecedorMapper.toResponseDTO(ProdutoFornecedorsalvo);
     }
 
+    public List<ProdutoFornecedorResponseDTO> listarTodos() {
+        return produtoFornecedorRepository.findAll()
+                .stream()
+                .map(produtoFornecedorMapper::toResponseDTO)
+                .toList();
+    }
+
     public List<ProdutoFornecedorResponseDTO> listarFornecedoresDoProduto(Long idProduto) {
 
         if (!produtoRepository.existsById(idProduto)) {
@@ -82,6 +89,72 @@ public class ProdutoFornecedorService {
                 .map(produtoFornecedorMapper::toResponseDTO)
                 .toList();
 
+    }
+
+    public ProdutoFornecedorResponseDTO atualizarVinculo(
+            Long idProdutoFornecedor,
+            ProdutoFornecedorRequestDTO dto
+    ) {
+        ProdutoFornecedorEntity vinculo =
+                produtoFornecedorRepository.findById(idProdutoFornecedor)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Vínculo produto-fornecedor não encontrado"
+                                )
+                        );
+
+        ProdutoEntity produto =
+                produtoRepository.findById(dto.getIdProduto())
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Produto não encontrado"
+                                )
+                        );
+
+        FornecedorEntity fornecedor =
+                fornecedorRepository.findById(dto.getIdFornecedor())
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Fornecedor não encontrado"
+                                )
+                        );
+
+        boolean alterouProdutoOuFornecedor =
+                !vinculo.getProduto()
+                        .getIdProduto()
+                        .equals(dto.getIdProduto())
+                        ||
+                        !vinculo.getFornecedor()
+                                .getIdFornecedor()
+                                .equals(dto.getIdFornecedor());
+
+        if (alterouProdutoOuFornecedor &&
+                produtoFornecedorRepository
+                        .existsByProduto_IdProdutoAndFornecedor_IdFornecedor(
+                                dto.getIdProduto(),
+                                dto.getIdFornecedor()
+                        )) {
+
+            throw new BusinessException(
+                    "Fornecedor já vinculado ao produto"
+            );
+        }
+
+        vinculo.setProduto(produto);
+        vinculo.setFornecedor(fornecedor);
+        vinculo.setFornecedorPrincipal(
+                dto.isFornecedorPrincipal()
+        );
+        vinculo.setCustoFornecedor(
+                dto.getCustoFornecedor()
+        );
+
+        ProdutoFornecedorEntity vinculoAtualizado =
+                produtoFornecedorRepository.save(vinculo);
+
+        return produtoFornecedorMapper.toResponseDTO(
+                vinculoAtualizado
+        );
     }
 
     public void desativarRelacionametoProdutoFornecedor(Long idProdutoFornecedor) {

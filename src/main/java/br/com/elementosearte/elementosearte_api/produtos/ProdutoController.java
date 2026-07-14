@@ -82,6 +82,12 @@ public class ProdutoController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/ativar/{idProduto}")
+    public ResponseEntity<Void> ativarProduto(@PathVariable Long idProduto) {
+        produtoService.ativarProduto(idProduto);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{idProduto}")
     public ResponseEntity<Void> deletarProduto(@PathVariable Long idProduto) {
         produtoService.excluirProduto(idProduto);

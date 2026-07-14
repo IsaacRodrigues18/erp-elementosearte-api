@@ -22,12 +22,19 @@ public class ProdutoFornecedorMapper {
 
     public ProdutoFornecedorResponseDTO toResponseDTO(ProdutoFornecedorEntity entity) {
         ProdutoFornecedorResponseDTO responseDTO = new ProdutoFornecedorResponseDTO();
+
         responseDTO.setIdProdutoFornecedor(entity.getIdProdutoFornecedor());
+
         responseDTO.setIdProduto(entity.getProduto().getIdProduto());
+        responseDTO.setNomeProduto(entity.getProduto().getNomeProduto());
+
         responseDTO.setIdFornecedor(entity.getFornecedor().getIdFornecedor());
+        responseDTO.setNomeFornecedor(entity.getFornecedor().getNomeFornecedor());
+
         responseDTO.setFornecedorPrincipal(entity.isFornecedorPrincipal());
         responseDTO.setAtivo(entity.isAtivo());
         responseDTO.setCustoFornecedor(entity.getCustoFornecedor());
+
         return responseDTO;
     }
 }

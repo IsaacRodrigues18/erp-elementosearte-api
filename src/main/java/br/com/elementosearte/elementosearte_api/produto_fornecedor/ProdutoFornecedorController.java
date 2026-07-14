@@ -23,6 +23,14 @@ public class ProdutoFornecedorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoFornecedor);
     }
 
+    @GetMapping
+    public ResponseEntity<List<ProdutoFornecedorResponseDTO>> listarTodos() {
+        List<ProdutoFornecedorResponseDTO> vinculos =
+                produtoFornecedorService.listarTodos();
+
+        return ResponseEntity.ok(vinculos);
+    }
+
     @GetMapping("/produto/{idProduto}/fornecedores")
     public ResponseEntity<List<ProdutoFornecedorResponseDTO>> listarFornecedoresDoProduto(@PathVariable Long idProduto) {
         List<ProdutoFornecedorResponseDTO> fornecedores = produtoFornecedorService.listarFornecedoresDoProduto(idProduto);
@@ -44,6 +52,21 @@ public class ProdutoFornecedorController {
     public ResponseEntity<Void> ativarVinculo(@PathVariable Long idProdutofornecedor) {
         produtoFornecedorService.ativarRelacionamentoProdutoFornecedor(idProdutofornecedor);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @PutMapping("/{idProdutoFornecedor}")
+    public ResponseEntity<ProdutoFornecedorResponseDTO> atualizarVinculo(
+            @PathVariable Long idProdutoFornecedor,
+            @RequestBody @Valid ProdutoFornecedorRequestDTO dto
+    ) {
+        ProdutoFornecedorResponseDTO vinculoAtualizado =
+                produtoFornecedorService.atualizarVinculo(
+                        idProdutoFornecedor,
+                        dto
+                );
+
+        return ResponseEntity.ok(vinculoAtualizado);
     }
 
     @DeleteMapping("/{idProdutoFornecedor}")

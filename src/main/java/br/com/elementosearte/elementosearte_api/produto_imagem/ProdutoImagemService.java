@@ -19,10 +19,13 @@ public class ProdutoImagemService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    private ProdutoImagemResponseDTO toDTO(ProdutoImagemEntity produtoImagem) {
+    private ProdutoImagemResponseDTO toDTO(
+            ProdutoImagemEntity produtoImagem
+    ) {
         return new ProdutoImagemResponseDTO(
                 produtoImagem.getIdProdutoImagem(),
                 produtoImagem.getProduto().getIdProduto(),
+                produtoImagem.getProduto().getNomeProduto(),
                 produtoImagem.getNomeArquivo(),
                 produtoImagem.getUrlImagem(),
                 produtoImagem.isPrincipal(),
@@ -37,16 +40,33 @@ public class ProdutoImagemService {
         ProdutoEntity produto = produtoRepository.findById(dto.getIdProduto())
                 .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado"));
 
+        if (dto.isPrincipal()) {
+
+            List<ProdutoImagemEntity> imagensDoProduto =
+                    produtoImagemRepository.findByProdutoIdProduto(
+                            produto.getIdProduto()
+                    );
+
+            imagensDoProduto.forEach(imagem -> imagem.setPrincipal(false));
+
+            produtoImagemRepository.saveAll(imagensDoProduto);
+        }
+
         ProdutoImagemEntity produtoImagem = new ProdutoImagemEntity();
+
         produtoImagem.setProduto(produto);
         produtoImagem.setUrlImagem(dto.getUrlImagem());
         produtoImagem.setNomeArquivo(dto.getNomeArquivo());
         produtoImagem.setPrincipal(dto.isPrincipal());
+
         produtoImagem.setOrdemExibicao(
-                dto.getOrdemExibicao() != null ? dto.getOrdemExibicao() : 0
+                dto.getOrdemExibicao() != null
+                        ? dto.getOrdemExibicao()
+                        : 1
         );
 
-        ProdutoImagemEntity salvo = produtoImagemRepository.save(produtoImagem);
+        ProdutoImagemEntity salvo =
+                produtoImagemRepository.save(produtoImagem);
 
         return toDTO(salvo);
     }

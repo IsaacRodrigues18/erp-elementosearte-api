@@ -16,6 +16,8 @@ public class ProdutoImagemResponseDTO {
 
     private Long idProduto;
 
+    private String nomeProduto;
+
     private String nomeArquivo;
 
     private String urlImagem;
