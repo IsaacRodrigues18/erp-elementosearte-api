@@ -18,8 +18,8 @@ public class ProdutoImagemService {
 
     @Autowired
     private ProdutoRepository produtoRepository;
-
-    private ProdutoImagemResponseDTO toDTO(
+}
+    /*private ProdutoImagemResponseDTO toDTO(
             ProdutoImagemEntity produtoImagem
     ) {
         return new ProdutoImagemResponseDTO(
@@ -32,7 +32,7 @@ public class ProdutoImagemService {
                 produtoImagem.isAtivo(),
                 produtoImagem.getOrdemExibicao()
         );
-    }
+    /
 
 
     public ProdutoImagemResponseDTO adicionarImagemAoProduto(ProdutoImagemRequestDTO dto) {
@@ -164,7 +164,7 @@ public class ProdutoImagemService {
     }
 
 
-}
+}*/
 
 
 

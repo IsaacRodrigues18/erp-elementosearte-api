@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/produto-imagem")
 public class ProdutoImagemController {
 
-    @Autowired
+    /*@Autowired
     private ProdutoImagemService produtoImagemService;
 
     @PostMapping
@@ -51,6 +51,6 @@ public class ProdutoImagemController {
     public ResponseEntity<Void> deletarImagem(@PathVariable Long idProdutoImagem) {
         produtoImagemService.deletarImagem(idProdutoImagem);
         return ResponseEntity.noContent().build();
-    }
+    }*/
 
 }
