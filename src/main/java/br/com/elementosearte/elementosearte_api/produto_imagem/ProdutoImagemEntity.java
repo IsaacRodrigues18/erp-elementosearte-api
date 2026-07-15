@@ -29,8 +29,6 @@ public class ProdutoImagemEntity {
     @Column(name = "nome_arquivo", nullable = false, length = 255)
     private String nomeArquivo;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
     @Column(name = "dados_imagem", nullable = false, columnDefinition = "BYTEA")
     private byte[] dadosImagem;
 
