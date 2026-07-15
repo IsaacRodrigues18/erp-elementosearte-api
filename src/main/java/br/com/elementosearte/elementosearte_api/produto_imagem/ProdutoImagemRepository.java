@@ -11,4 +11,6 @@ public interface ProdutoImagemRepository extends JpaRepository<ProdutoImagemEnti
     List<ProdutoImagemEntity>findByProduto_IdProdutoAndAtivoTrue(Long idProduto);
 
     List<ProdutoImagemEntity>findByProduto_IdProdutoAndAtivoTrueOrderByOrdemExibicaoAsc(Long idProduto);
+
+    boolean existsByProduto_IdProdutoAndNomeArquivoAndAtivoTrue(Long idProduto, String nomeArquivo);
 }

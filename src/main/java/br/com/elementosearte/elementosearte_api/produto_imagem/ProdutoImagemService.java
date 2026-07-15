@@ -42,36 +42,66 @@ public class ProdutoImagemService {
     }
 
     @Transactional
-    public ProdutoImagemResponseDTO adicionarImagemAoProduto( ProdutoImagemRequestDTO dto, MultipartFile arquivo) {
+    public ProdutoImagemResponseDTO adicionarImagemAoProduto(
+            ProdutoImagemRequestDTO dto,
+            MultipartFile arquivo
+    ) {
         validarArquivo(arquivo);
 
         ProdutoEntity produto = produtoRepository
                 .findById(dto.getIdProduto())
-                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Produto não encontrado")
+                );
 
-        if (dto.isPrincipal()) {
-            removerImagemPrincipalAtual(produto.getIdProduto());
+        String nomeArquivo = obterNomeArquivo(arquivo);
+
+        boolean imagemJaCadastrada =
+                produtoImagemRepository
+                        .existsByProduto_IdProdutoAndNomeArquivoAndAtivoTrue(
+                                produto.getIdProduto(),
+                                nomeArquivo
+                        );
+
+        if (imagemJaCadastrada) {
+            throw new BusinessException(
+                    "Esta imagem já está cadastrada para este produto"
+            );
         }
 
-        definirOrdemPadrao(dto, produto.getIdProduto());
+        if (dto.isPrincipal()) {
+            removerImagemPrincipalAtual(
+                    produto.getIdProduto()
+            );
+        }
+
+        definirOrdemPadrao(
+                dto,
+                produto.getIdProduto()
+        );
+
         try {
             ProdutoImagemEntity produtoImagem =
                     produtoImagemMapper.toEntity(
                             dto,
                             produto,
                             arquivo.getBytes(),
-                            obterNomeArquivo(arquivo),
+                            nomeArquivo,
                             arquivo.getContentType(),
                             arquivo.getSize()
                     );
 
-            ProdutoImagemEntity imagemSalva = produtoImagemRepository.save(produtoImagem);
+            ProdutoImagemEntity imagemSalva =
+                    produtoImagemRepository.save(produtoImagem);
 
-            return produtoImagemMapper.toResponseDTO(imagemSalva
+            return produtoImagemMapper.toResponseDTO(
+                    imagemSalva
             );
 
         } catch (IOException erro) {
-            throw new BusinessException("Não foi possível processar o arquivo da imagem");
+            throw new BusinessException(
+                    "Não foi possível processar o arquivo da imagem"
+            );
         }
     }
 
@@ -143,15 +173,10 @@ public class ProdutoImagemService {
         imagens.add(novaOrdem - 1, imagemMovida);
 
         for (int indice = 0; indice < imagens.size(); indice++) {
-
-            imagens.get(indice)
-                    .setOrdemExibicao(indice + 1);
+            imagens.get(indice).setOrdemExibicao(indice + 1);
         }
 
-        List<ProdutoImagemEntity> imagensSalvas =
-                produtoImagemRepository.saveAll(
-                        imagens
-                );
+        List<ProdutoImagemEntity> imagensSalvas = produtoImagemRepository.saveAll(imagens);
 
         return imagensSalvas
                 .stream()
@@ -161,8 +186,7 @@ public class ProdutoImagemService {
 
     @Transactional
     public void deletarImagem(Long idProdutoImagem) {
-        ProdutoImagemEntity imagem =
-                buscarImagemPorId(idProdutoImagem);
+        ProdutoImagemEntity imagem = buscarImagemPorId(idProdutoImagem);
 
         if (!imagem.isAtivo()) {
             throw new BusinessException("A imagem já está inativa");
@@ -177,11 +201,12 @@ public class ProdutoImagemService {
 
         produtoImagemRepository.save(imagem);
 
+        reorganizarOrdemDasImagens(idProduto);
+
         if (eraPrincipal) {
             definirNovaImagemPrincipal(idProduto);
         }
 
-        reorganizarOrdemDasImagens(idProduto);
     }
 
     public ProdutoImagemEntity buscarImagemPorId(
@@ -279,9 +304,9 @@ public class ProdutoImagemService {
                 produtoImagemRepository.findByProduto_IdProdutoAndAtivoTrueOrderByOrdemExibicaoAsc(idProduto);
 
         for (int indice = 0; indice < imagensAtivas.size(); indice++) {
-            imagensAtivas.get(indice).setOrdemExibicao(indice + 1);
+            imagensAtivas.get(indice)
+                    .setOrdemExibicao(indice + 1);
         }
-        produtoImagemRepository.saveAll(imagensAtivas
-        );
+        produtoImagemRepository.saveAll(imagensAtivas);
     }
 }
